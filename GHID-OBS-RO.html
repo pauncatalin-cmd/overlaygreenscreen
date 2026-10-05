@@ -1,0 +1,30 @@
+<!doctype html><meta charset="utf-8"><style>body{max-width:900px;margin:40px auto;font:18px/1.6 Segoe UI}pre{white-space:pre-wrap;font:inherit}</style><h1>Ghid OBS — Acvariu real</h1><pre>KIP STUDIO V5 — ACVARIU SI RAFTURI SPORT
+
+Acvariu marin cu pesti filmati real si camera fixa. Rama, camera, covorul si obiectele raman din decorul existent. Fundalul principal este copiat identic, fara recodare.
+
+1. Extrage ZIP-ul intr-un folder permanent. Nu deschide fisierele din interiorul arhivei.
+2. OBS &gt; Settings &gt; Video: Base si Output 1920x1080; 60 FPS.
+3. Fundal: Media Source &gt; Local File &gt; studio-real-loop-1080p60.mp4. Activeaza Loop, Restart playback when source becomes active si hardware decoding daca este disponibil. Fit to Screen, pozitie 0,0. Video H.264, fara sunet, 56 secunde.
+4. Animatii: Browser Source &gt; Local file &gt; overlay.html; Width 1920, Height 1080; Use custom frame rate 60 FPS. Fundal transparent; fara Chroma Key pe aceasta sursa. Fit to Screen.
+5. Ordine de sus in jos: alerte optional; camera Sony cu Chroma Key; clasament propriu optional; Animatii Browser; Fundal Media Source. Nu suprapune sursele din alte versiuni.
+6. Sony a6400: micro-HDMI Type D la placa de captura 1080p60, USB 3. Camera in Movie; HDMI Info Display Off; HDMI Resolution 1080p. Captureaza 1920x1080 la 60 sau 59.94 FPS conform placii; NTSC poate permite 60p, PAL poate afisa 50p. Foloseste alimentare continua compatibila pentru sesiuni lungi.
+7. Camera &gt; Filters &gt; Chroma Key &gt; Green. Porneste de la valorile implicite. Similarity elimina verdele, Smoothness regleaza conturul, Spill Reduction reduce reflexiile verzi. Lumineaza panza uniform si fata separat; aproximativ 1–1,5 m intre persoana si panza, daca spatiul permite.
+8. Centreaza persoana aproximativ la X=960, capul la Y=370–450; pastreaza proportiile imaginii si camera la nivelul ochilor. Nu intinde captura pe o singura axa.
+9. TV: X=692 Y=248 W=545 H=265. Logo KIP in stanga, fara deformare, cu pulsatie discreta. Clasament in dreapta: X=980 Y=270 W=235 H=225. Sursa clasamentului se pune peste Animatii si sub camera.
+10. Avionul si LED-urile ruleaza automat. Bannerele se repeta la intervale de 32 secunde: TIKTOK: KIP.RO; YOUTUBE: KIPANU; KICK: KIPZONE; NU UITA DE FOLLOW!; HAI CU TAP TAP-URILE! Elice animata, banner fluturat. Nu sunt necesare comenzi manuale.
+11. Preview: deschide preview.html cu Edge sau Chrome. In OBS foloseste separat Media Source si overlay.html, nu preview.html.
+12. La inlocuirea versiunii, alege fisierele din acest folder nou pentru ambele surse OBS. Apasa Refresh cache of current page la Browser Source daca vezi elemente din editia veche. Verifica sa nu ramana activa o a doua sursa de fundal sau animatii.
+13. Pentru RTX 4070 Super: un singur video de fundal cu decodare hardware si encoder NVENC pentru stream. Limiteaza FPS-ul jocului daca OBS pierde cadre. Verifica View &gt; Stats si o inregistrare de proba cu jocul pornit.
+
+
+IMPORTANT
+Acvariul porneste automat din overlay.html. Nu adauga separat aquarium-loop.mp4. Selecteaza fisierele din acest folder pentru ambele surse OBS; dezactiveaza vechea sursa de animatii cu semineu.
+
+Filmarea originala este 4K la 30 FPS. Varianta pentru OBS este interpolata la 60 FPS, cu o bucla de 56 secunde si o dizolvare de 1 secunda la imbinare. Interpolarea si imbinarea pot produce mici artefacte pe pestii care se intersecteaza. Nu exista animatie de deplasare a intregului acvariu. Verificarea camerei este masurata separat de miscarea pestilor; performanta cu jocul pornit trebuie verificata in OBS.
+
+SURSE
+Acvariu: Engin Akyurt — Tropical Fish Swimming in an Aquarium, Pexels: https://www.pexels.com/video/tropical-fish-swimming-in-an-aquarium-16010599/
+Cer: Ilya Klimenko, Pexels: https://www.pexels.com/video/blue-sky-with-moving-clouds-10616832/
+Licenta: https://www.pexels.com/license/
+Logo KIP furnizat de utilizator.
+</pre>
