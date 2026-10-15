@@ -1,7 +1,7 @@
-<!doctype html><html lang="ro"><meta charset="utf-8"><title>KIP Studio — Acvariu real</title><style>html,body{margin:0;background:transparent;overflow:hidden}canvas{display:block;width:100vw;height:auto}</style><video id="water" src="assets/aquarium-loop.mp4?v=11" autoplay muted loop playsinline preload="auto" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"></video><canvas width="1920" height="1080"></canvas><script>
+<!doctype html><html lang="ro"><meta charset="utf-8"><title>KIP Studio — Acvariu real</title><style>html,body{margin:0;background:transparent;overflow:hidden}canvas{display:block;width:100vw;height:auto}</style><video id="water" src="assets/aquarium-loop.mp4?v=12" autoplay muted loop playsinline preload="auto" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"></video><canvas width="1920" height="1080"></canvas><script>
 'use strict';
-const c=document.querySelector('canvas'),g=c.getContext('2d'),image=src=>{const im=new Image();im.src='assets/'+src+'?v=11';return im};
-const shelves=image('shelf-edits.png'),tvBackground=image('tv-top-background.png'),waterPoster=image('aquarium-preview.jpg'),waterVideo=document.querySelector('#water');waterVideo.muted=true;waterVideo.play().catch(()=>{});
+const c=document.querySelector('canvas'),g=c.getContext('2d'),image=src=>{const im=new Image();im.src='assets/'+src+'?v=12';return im};
+const background=image('../studio-kip-rebrand.png'),waterPoster=image('aquarium-preview.jpg'),waterVideo=document.querySelector('#water');waterVideo.muted=true;waterVideo.play().catch(()=>{});
 const plane=image('avion.png'),logos={kick:image('kick.svg'),youtube:image('youtube.png'),tiktok:image('tiktok.png')};
 const ready=im=>im.complete&&im.naturalWidth>0;
 const messages=[{logo:'tiktok',text:'TIKTOK: KIP.RO'},{logo:'youtube',text:'YOUTUBE: KIPANU'},{logo:'kick',text:'KICK: KIPZONE'},{text:'NU UITA DE FOLLOW!'},{text:'HAI CU TAP TAP-URILE!'}];
@@ -17,7 +17,7 @@ function crystal(t){const intensity=.10+.04*Math.sin(t*1.37)+.018*Math.sin(t*2.9
 function leds(t){g.save();g.globalCompositeOperation='screen';const cycle=t/45,hue=185+35*Math.sin(cycle),intensity=.16+.035*Math.sin(t*.45);[[425,241,125,0],[425,361,125,0],[425,558,125,0],[1375,244,108,1],[1375,382,108,1],[1375,478,108,1],[1375,599,108,1]].forEach(([x,y,w,side],i)=>{let color=`hsl(${side?30+25*Math.sin(cycle+.7):hue},100%,65%)`;g.strokeStyle=color;g.shadowColor=color;g.shadowBlur=18;g.globalAlpha=intensity+.025*Math.sin(t*.35+i);g.lineWidth=3;g.beginPath();g.moveTo(x,y);g.lineTo(x+w,y);g.stroke()});g.restore()}
 function tv(t){}
 function aquarium(t){g.save();g.beginPath();path([[0,475],[389,515],[389,662],[0,725]]);g.clip();if(waterVideo.readyState>=2)g.drawImage(waterVideo,0,475,400,260);else if(ready(waterPoster))g.drawImage(waterPoster,0,475,400,260);g.restore()}
-let epoch=null,last=-Infinity;function frame(ms){requestAnimationFrame(frame);if(ms-last<1000/60-.75)return;last=ms;if(epoch===null)epoch=ms;let t=(ms-epoch)/1000;g.clearRect(0,0,1920,1080);if(ready(shelves))g.drawImage(shelves,0,0,1920,1080);aquarium(t);leds(t);crystal(t);tv(t);flight(t)}requestAnimationFrame(frame);
+let epoch=null,last=-Infinity;function frame(ms){requestAnimationFrame(frame);if(ms-last<1000/60-.75)return;last=ms;if(epoch===null)epoch=ms;let t=(ms-epoch)/1000;g.clearRect(0,0,1920,1080);if(ready(background))g.drawImage(background,0,0,1920,1080);aquarium(t);leds(t);crystal(t);tv(t);flight(t)}requestAnimationFrame(frame);
 </script></html>
 
 
