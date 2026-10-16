@@ -1,12 +1,11 @@
 <!doctype html><html lang="ro"><meta charset="utf-8"><title>KIP Studio — LED</title>
 <style>html,body{margin:0;background:#08090b;overflow:hidden}canvas{display:block;width:100vw;height:auto}</style>
-<video id="water" src="assets/aquarium-loop.mp4" autoplay muted loop playsinline preload="auto" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"></video>
-<canvas width="1920" height="1080" aria-label="Studio KIP cu panou LED pentru mesajele comunității"></canvas><script>
+<canvas width="1920" height="1080" aria-label="Studio KIP cu ecran YST în locul acvariului și mesaje rotative sus"></canvas><script>
 'use strict';
 const c=document.querySelector('canvas'),g=c.getContext('2d');
-const image=src=>{const im=new Image();im.src='assets/'+src+'?v=15';return im};
-const background=image('../studio-led-final.png'),waterPoster=image('aquarium-preview.jpg'),waterVideo=document.querySelector('#water');
-waterVideo.play().catch(()=>{});
+const image=src=>{const im=new Image();im.src='assets/'+src+'?v=16';return im};
+const background=image('../studio-led-final.png'),ystScreen=image('yst-screen.png');
+const screen=document.createElement('canvas');screen.width=960;screen.height=480;const sg=screen.getContext('2d');
 const ready=im=>im.complete&&im.naturalWidth>0;
 const logos={tiktok:image('tiktok.png'),youtube:image('youtube.png'),kick:image('kick.svg')};
 const messages=['TIKTOK: KIP.RO','YOUTUBE: KIPANU','KIPZONE','NU UITA DE FOLLOW!','HAI CU TAP TAP-URILE!'];
@@ -35,8 +34,58 @@ function display(t){
 function crystal(t){const intensity=.10+.04*Math.sin(t*1.37)+.018*Math.sin(t*2.91+.8)+.01*Math.sin(t*4.13+2);g.save();g.beginPath();g.rect(1375,516,133,62);g.clip();g.globalCompositeOperation='screen';const light=g.createRadialGradient(1466,546,3,1466,546,47);light.addColorStop(0,`rgba(255,194,110,${intensity})`);light.addColorStop(.38,`rgba(255,165,72,${intensity*.75})`);light.addColorStop(1,'rgba(255,145,55,0)');g.fillStyle=light;g.fillRect(1417,517,91,61);g.restore()}
 function leds(t){g.save();g.globalCompositeOperation='screen';const cycle=t/45,hue=185+35*Math.sin(cycle),intensity=.16+.035*Math.sin(t*.45);[[425,241,125,0],[425,361,125,0],[425,558,125,0],[1375,244,108,1],[1375,382,108,1],[1375,478,108,1],[1375,599,108,1]].forEach(([x,y,w,side],i)=>{let color=`hsl(${side?30+25*Math.sin(cycle+.7):hue},100%,65%)`;g.strokeStyle=color;g.shadowColor=color;g.shadowBlur=18;g.globalAlpha=intensity+.025*Math.sin(t*.35+i);g.lineWidth=3;g.beginPath();g.moveTo(x,y);g.lineTo(x+w,y);g.stroke()});g.restore()}
 function tv(t){}
-function aquarium(t){g.save();g.beginPath();path([[0,475],[389,515],[389,662],[0,725]]);g.clip();if(waterVideo.readyState>=2)g.drawImage(waterVideo,0,475,400,260);else if(ready(waterPoster))g.drawImage(waterPoster,0,475,400,260);g.restore()}
+// Map the entire banner to the former aquarium glass, including its perspective.
+const glass=[[0,475],[389,515],[389,662],[0,725]];
+function screenPoint(u,v){return [389*u,475+40*u+(250-103*u)*v]}
+function screenTriangle(points,source){
+ const [a,b,c]=points,[sa,sb,sc]=source;
+ const den=(sb[0]-sa[0])*(sc[1]-sa[1])-(sc[0]-sa[0])*(sb[1]-sa[1]);
+ const ax=((b[0]-a[0])*(sc[1]-sa[1])-(c[0]-a[0])*(sb[1]-sa[1]))/den;
+ const ay=((b[1]-a[1])*(sc[1]-sa[1])-(c[1]-a[1])*(sb[1]-sa[1]))/den;
+ const bx=((c[0]-a[0])*(sb[0]-sa[0])-(b[0]-a[0])*(sc[0]-sa[0]))/den;
+ const by=((c[1]-a[1])*(sb[0]-sa[0])-(b[1]-a[1])*(sc[0]-sa[0]))/den;
+ // Overlap triangle clips slightly to avoid dark antialias seams.
+ const cx=(a[0]+b[0]+c[0])/3,cy=(a[1]+b[1]+c[1])/3;
+ const clipPoints=points.map(p=>{const dx=p[0]-cx,dy=p[1]-cy,len=Math.hypot(dx,dy);return [p[0]+dx/len*.75,p[1]+dy/len*.75]});
+ g.save();g.beginPath();path(clipPoints);g.clip();
+ g.transform(ax,ay,bx,by,a[0]-ax*sa[0]-bx*sa[1],a[1]-ay*sa[0]-by*sa[1]);
+ g.drawImage(screen,0,0);g.restore();
+}
+function sponsorScreen(t){
+ sg.fillStyle='#000';sg.fillRect(0,0,960,480);
+ if(ready(ystScreen))sg.drawImage(ystScreen,0,0,960,480);
+ const pulse=.04+.035*(1+Math.sin(t*.8));
+ const glow=sg.createLinearGradient(0,0,960,0);
+ glow.addColorStop(0,`rgba(0,135,255,${pulse})`);glow.addColorStop(.35,'rgba(0,0,0,0)');glow.addColorStop(1,`rgba(0,135,255,${pulse*.7})`);
+ sg.fillStyle=glow;sg.fillRect(0,0,960,480);
+ for(let i=0;i<20;i++){
+  const x=i%2?900+(i*17%60):(i*19%75),y=(i*83-t*8+48000)%480;
+  sg.fillStyle=`rgba(125,213,255,${.15+.15*Math.sin(t+i)**2})`;
+  sg.fillRect(x,y,1.5,1.5);
+ }
+ const phase=t%12;
+ if(phase>3&&phase<7){
+  const x=(phase-3)/4*1280-160,shine=sg.createLinearGradient(x-100,0,x+100,0);
+  shine.addColorStop(0,'rgba(140,220,255,0)');shine.addColorStop(.5,'rgba(140,220,255,.065)');shine.addColorStop(1,'rgba(140,220,255,0)');
+  sg.fillStyle=shine;sg.fillRect(0,0,960,480);
+ }
+ // A subtle glass reflection gives the panel the same finish as the studio.
+ const reflection=sg.createLinearGradient(0,0,0,480);
+ reflection.addColorStop(0,'rgba(174,223,255,.08)');reflection.addColorStop(.3,'rgba(174,223,255,0)');reflection.addColorStop(1,'rgba(0,0,0,.1)');
+ sg.fillStyle=reflection;sg.fillRect(0,0,960,480);
+ g.save();g.beginPath();path(glass);g.clip();
+ g.fillStyle='#000';g.fillRect(0,475,390,250);
+ g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
+ const columns=24;
+ for(let i=0;i<columns;i++){
+  const u=i/columns,v=(i+1)/columns,x=u*960,xx=v*960;
+  const a=screenPoint(u,0),b=screenPoint(v,0),c=screenPoint(v,1),d=screenPoint(u,1);
+  screenTriangle([a,b,d],[[x,0],[xx,0],[x,480]]);
+  screenTriangle([b,c,d],[[xx,0],[xx,480],[x,480]]);
+ }
+ g.restore();
+}
 
 let epoch=null,last=-Infinity;
-function frame(ms){requestAnimationFrame(frame);if(ms-last<1000/30-1)return;last=ms;if(epoch===null)epoch=ms;const t=(ms-epoch)/1000;g.clearRect(0,0,1920,1080);if(ready(background))g.drawImage(background,0,0,1920,1080);aquarium(t);leds(t);crystal(t);display(t)}requestAnimationFrame(frame);
+function frame(ms){requestAnimationFrame(frame);if(ms-last<1000/30-1)return;last=ms;if(epoch===null)epoch=ms;const t=(ms-epoch)/1000;g.clearRect(0,0,1920,1080);if(ready(background))g.drawImage(background,0,0,1920,1080);sponsorScreen(t);leds(t);crystal(t);display(t)}requestAnimationFrame(frame);
 </script></html>
