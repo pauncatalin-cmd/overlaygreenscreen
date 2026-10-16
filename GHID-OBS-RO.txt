@@ -11,7 +11,7 @@ Acvariu marin cu pesti filmati real si camera fixa. Rama, camera, covorul si obi
 7. Camera > Filters > Chroma Key > Green. Porneste de la valorile implicite. Similarity elimina verdele, Smoothness regleaza conturul, Spill Reduction reduce reflexiile verzi. Lumineaza panza uniform si fata separat; aproximativ 1–1,5 m intre persoana si panza, daca spatiul permite.
 8. Centreaza persoana aproximativ la X=960, capul la Y=370–450; pastreaza proportiile imaginii si camera la nivelul ochilor. Nu intinde captura pe o singura axa.
 9. TV: X=692 Y=248 W=545 H=265. Logo KIP in stanga, fara deformare, cu pulsatie discreta. Clasament in dreapta: X=980 Y=270 W=235 H=225. Sursa clasamentului se pune peste Animatii si sub camera.
-10. Panoul de sus afiseaza permanent bannerul YST, fara margini albe si cu proportiile pastrate. Mesajele rotative au fost inlocuite. LED-urile si acvariul continua sa ruleze automat.
+10. Avionul si LED-urile ruleaza automat. Bannerele se repeta la intervale de 32 secunde: TIKTOK: KIP.RO; YOUTUBE: KIPANU; KIPZONE; NU UITA DE FOLLOW!; HAI CU TAP TAP-URILE! Elice animata, banner fluturat. Nu sunt necesare comenzi manuale.
 11. Preview: deschide preview.html cu Edge sau Chrome. In OBS foloseste separat Media Source si overlay.html, nu preview.html.
 12. La inlocuirea versiunii, alege fisierele din acest folder nou pentru ambele surse OBS. Apasa Refresh cache of current page la Browser Source daca vezi elemente din editia veche. Verifica sa nu ramana activa o a doua sursa de fundal sau animatii.
 13. Pentru RTX 4070 Super: un singur video de fundal cu decodare hardware si encoder NVENC pentru stream. Limiteaza FPS-ul jocului daca OBS pierde cadre. Verifica View > Stats si o inregistrare de proba cu jocul pornit.
