@@ -1,36 +1,26 @@
 <!doctype html><html lang="ro"><meta charset="utf-8"><title>KIP Studio — LED</title>
 <style>html,body{margin:0;background:#08090b;overflow:hidden}canvas{display:block;width:100vw;height:auto}</style>
 <video id="water" src="assets/aquarium-loop.mp4" autoplay muted loop playsinline preload="auto" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"></video>
-<canvas width="1920" height="1080" aria-label="Studio KIP cu panou LED pentru mesajele comunității"></canvas><script>
+<canvas width="1920" height="1080" aria-label="Studio KIP cu banner YST pe panoul de sus"></canvas><script>
 'use strict';
 const c=document.querySelector('canvas'),g=c.getContext('2d');
-const image=src=>{const im=new Image();im.src='assets/'+src+'?v=13';return im};
+const image=src=>{const im=new Image();im.src='assets/'+src+'?v=14';return im};
 const background=image('../studio-led-final.png'),waterPoster=image('aquarium-preview.jpg'),waterVideo=document.querySelector('#water');
 waterVideo.play().catch(()=>{});
 const ready=im=>im.complete&&im.naturalWidth>0;
-const logos={tiktok:image('tiktok.png'),youtube:image('youtube.png'),kick:image('kick.svg')};
-const messages=['TIKTOK: KIP.RO','YOUTUBE: KIPANU','KICK: KIPZONE','NU UITA DE FOLLOW!','HAI CU TAP TAP-URILE!'];
+const sponsorBanner=image('yst-banner.png');
 function path(points){g.moveTo(...points[0]);for(let i=1;i<points.length;i++)g.lineTo(...points[i]);g.closePath()}
 function box(x,y,w,h,r,fill){g.fillStyle=fill;g.beginPath();g.roundRect(x,y,w,h,r);g.fill()}
-function messageState(t){const position=t/7,index=Math.floor(position)%messages.length,phase=(position%1)*7;return {index,alpha:Math.min(1,phase/.45,(7-phase)/.45)}}
-function display(t){
- const state=messageState(t),icon=Object.values(logos)[state.index];
- g.save();
- // All housing, badge and reflected light belong to the room photograph.
- // Draw only the luminous contents, confined to the physical screen face.
- g.beginPath();g.rect(687,45,721,102);g.clip();g.globalAlpha=state.alpha;
- const centerY=96;
- if(icon&&ready(icon)){
-  g.save();g.shadowColor=state.index===2?'#53fc18':state.index===1?'#ff3535':'#24ddd9';g.shadowBlur=7;
-  if(state.index===0)g.drawImage(icon,1000,900,2000,2100,727,60,66,69);
-  else if(state.index===1)g.drawImage(icon,713,68,103,72);
-  else g.drawImage(icon,711,79,110,37);
-  g.restore();
- }
- const text=messages[state.index],left=icon?842:714,right=1380,available=right-left;
- let size=42;g.font='800 '+size+'px "Segoe UI",Arial';while(g.measureText(text).width>available&&size>25){size--;g.font='800 '+size+'px "Segoe UI",Arial'}
- g.textAlign='center';g.textBaseline='middle';g.fillStyle='#ffdf86';g.shadowColor='#f0b744';g.shadowBlur=5;
- g.fillText(text,(left+right)/2,centerY);g.shadowBlur=0;g.restore();
+function display(){
+ if(!ready(sponsorBanner))return;
+ const x=687,y=45,w=721,h=102;
+ const scale=Math.min(w/sponsorBanner.naturalWidth,h/sponsorBanner.naturalHeight);
+ const dw=sponsorBanner.naturalWidth*scale,dh=sponsorBanner.naturalHeight*scale;
+ g.save();g.beginPath();g.rect(x,y,w,h);g.clip();
+ g.fillStyle='#000';g.fillRect(x,y,w,h);
+ g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
+ g.drawImage(sponsorBanner,x+(w-dw)/2,y+(h-dh)/2,dw,dh);
+ g.restore();
 }
 function crystal(t){const intensity=.10+.04*Math.sin(t*1.37)+.018*Math.sin(t*2.91+.8)+.01*Math.sin(t*4.13+2);g.save();g.beginPath();g.rect(1375,516,133,62);g.clip();g.globalCompositeOperation='screen';const light=g.createRadialGradient(1466,546,3,1466,546,47);light.addColorStop(0,`rgba(255,194,110,${intensity})`);light.addColorStop(.38,`rgba(255,165,72,${intensity*.75})`);light.addColorStop(1,'rgba(255,145,55,0)');g.fillStyle=light;g.fillRect(1417,517,91,61);g.restore()}
 function leds(t){g.save();g.globalCompositeOperation='screen';const cycle=t/45,hue=185+35*Math.sin(cycle),intensity=.16+.035*Math.sin(t*.45);[[425,241,125,0],[425,361,125,0],[425,558,125,0],[1375,244,108,1],[1375,382,108,1],[1375,478,108,1],[1375,599,108,1]].forEach(([x,y,w,side],i)=>{let color=`hsl(${side?30+25*Math.sin(cycle+.7):hue},100%,65%)`;g.strokeStyle=color;g.shadowColor=color;g.shadowBlur=18;g.globalAlpha=intensity+.025*Math.sin(t*.35+i);g.lineWidth=3;g.beginPath();g.moveTo(x,y);g.lineTo(x+w,y);g.stroke()});g.restore()}
