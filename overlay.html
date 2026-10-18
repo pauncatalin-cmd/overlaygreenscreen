@@ -1,19 +1,19 @@
-<!doctype html><html lang="ro"><meta charset="utf-8"><title>KIP Studio — LED</title>
-<style>html,body{margin:0;background:#08090b;overflow:hidden}canvas{display:block;width:100vw;height:auto}</style>
+<!doctype html><html lang="ro"><meta charset="utf-8"><title>KIP ZONE — Studio futurist</title>
+<style>@font-face{font-family:Barlow;src:url(assets/font-4.ttf)}html,body{margin:0;background:#08090b;overflow:hidden}canvas{display:block;width:100vw;height:auto}</style>
 <canvas width="1920" height="1080" aria-label="Studio KIP cu ecran YST în locul acvariului și mesaje rotative sus"></canvas><script>
 'use strict';
 const c=document.querySelector('canvas'),g=c.getContext('2d');
 const image=src=>{const im=new Image();im.src='assets/'+src+'?v=16';return im};
-const background=image('../studio-led-final.png'),ystScreen=image('yst-screen.png');
+const background=image('studio-futurist.png'),ystScreen=image('yst-screen.png'),tikstage=image('tikstage.svg');
 const screen=document.createElement('canvas');screen.width=960;screen.height=480;const sg=screen.getContext('2d');
 const ready=im=>im.complete&&im.naturalWidth>0;
 const logos={tiktok:image('tiktok.png'),youtube:image('youtube.png'),kick:image('kick.svg')};
-const messages=['TIKTOK: KIP.RO','YOUTUBE: KIPANU','KIPZONE','NU UITA DE FOLLOW!','HAI CU TAP TAP-URILE!'];
+const messages=['TIKTOK: KIP.RO','YOUTUBE: KIPANU','KIP ZONE','NU UITA DE FOLLOW!','HAI CU TAP TAP-URILE!','YST · COD KIP · -10%','TIKSTAGE · KIP20 · -20%'];
 function path(points){g.moveTo(...points[0]);for(let i=1;i<points.length;i++)g.lineTo(...points[i]);g.closePath()}
 function box(x,y,w,h,r,fill){g.fillStyle=fill;g.beginPath();g.roundRect(x,y,w,h,r);g.fill()}
 function messageState(t){const position=t/7,index=Math.floor(position)%messages.length,phase=(position%1)*7;return {index,alpha:Math.min(1,phase/.45,(7-phase)/.45)}}
 function display(t){
- const state=messageState(t),icon=Object.values(logos)[state.index];
+ const state=messageState(t),icon=state.index<2?Object.values(logos)[state.index]:null;
  g.save();
  // All housing, badge and reflected light belong to the room photograph.
  // Draw only the luminous contents, confined to the physical screen face.
@@ -27,8 +27,8 @@ function display(t){
   g.restore();
  }
  const text=messages[state.index],left=icon?842:714,right=1380,available=right-left;
- let size=42;g.font='800 '+size+'px "Segoe UI",Arial';while(g.measureText(text).width>available&&size>25){size--;g.font='800 '+size+'px "Segoe UI",Arial'}
- g.textAlign='center';g.textBaseline='middle';g.fillStyle='#ffdf86';g.shadowColor='#f0b744';g.shadowBlur=5;
+ let size=42;g.font='800 '+size+'px Barlow,"Segoe UI",Arial';while(g.measureText(text).width>available&&size>25){size--;g.font='800 '+size+'px Barlow,"Segoe UI",Arial'}
+ g.textAlign='center';g.textBaseline='middle';g.fillStyle='#ffd34f';g.shadowColor='#f0b744';g.shadowBlur=5;
  g.fillText(text,(left+right)/2,centerY);g.shadowBlur=0;g.restore();
 }
 function crystal(t){const intensity=.10+.04*Math.sin(t*1.37)+.018*Math.sin(t*2.91+.8)+.01*Math.sin(t*4.13+2);g.save();g.beginPath();g.rect(1375,516,133,62);g.clip();g.globalCompositeOperation='screen';const light=g.createRadialGradient(1466,546,3,1466,546,47);light.addColorStop(0,`rgba(255,194,110,${intensity})`);light.addColorStop(.38,`rgba(255,165,72,${intensity*.75})`);light.addColorStop(1,'rgba(255,145,55,0)');g.fillStyle=light;g.fillRect(1417,517,91,61);g.restore()}
@@ -53,7 +53,15 @@ function screenTriangle(points,source){
 }
 function sponsorScreen(t){
  sg.fillStyle='#000';sg.fillRect(0,0,960,480);
- if(ready(ystScreen))sg.drawImage(ystScreen,0,0,960,480);
+ if(Math.floor(t/9)%2===0){
+  if(ready(ystScreen))sg.drawImage(ystScreen,0,0,960,480);
+ }else{
+  sg.fillStyle='#080a0b';sg.fillRect(0,0,960,480);
+  if(ready(tikstage))sg.drawImage(tikstage,240,55,480,100);
+  sg.textAlign='center';sg.fillStyle='#f6f3e9';sg.font='bold 48px Barlow,Arial';sg.fillText('INTERACTIVITATE LIVE',480,232);
+  sg.fillStyle='#ffd34f';sg.font='bold 74px Barlow,Arial';sg.fillText('COD KIP20',480,330);
+  sg.fillStyle='#f6f3e9';sg.font='bold 42px Barlow,Arial';sg.fillText('20% REDUCERE',480,402);
+ }
  const pulse=.04+.035*(1+Math.sin(t*.8));
  const glow=sg.createLinearGradient(0,0,960,0);
  glow.addColorStop(0,`rgba(0,135,255,${pulse})`);glow.addColorStop(.35,'rgba(0,0,0,0)');glow.addColorStop(1,`rgba(0,135,255,${pulse*.7})`);
@@ -87,5 +95,6 @@ function sponsorScreen(t){
 }
 
 let epoch=null,last=-Infinity;
-function frame(ms){requestAnimationFrame(frame);if(ms-last<1000/30-1)return;last=ms;if(epoch===null)epoch=ms;const t=(ms-epoch)/1000;g.clearRect(0,0,1920,1080);if(ready(background))g.drawImage(background,0,0,1920,1080);sponsorScreen(t);leds(t);crystal(t);display(t)}requestAnimationFrame(frame);
+function frame(ms){requestAnimationFrame(frame);last=ms;if(epoch===null)epoch=ms;const t=(ms-epoch)/1000;g.clearRect(0,0,1920,1080);if(ready(background))g.drawImage(background,0,0,1920,1080);sponsorScreen(t);leds(t);crystal(t);display(t)}requestAnimationFrame(frame);
 </script></html>
+
