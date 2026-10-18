@@ -1,10 +1,11 @@
 <!doctype html><html lang="ro"><meta charset="utf-8"><title>KIP ZONE — Studio futurist</title>
 <style>@font-face{font-family:Barlow;src:url(assets/font-4.ttf)}html,body{margin:0;background:#08090b;overflow:hidden}canvas{display:block;width:100vw;height:auto}</style>
-<canvas width="1920" height="1080" aria-label="Studio KIP cu ecran YST în locul acvariului și mesaje rotative sus"></canvas><script>
+<canvas width="1920" height="1080" aria-label="Studio KIP cu acvariu video și panou SF animat"></canvas><script>
 'use strict';
 const c=document.querySelector('canvas'),g=c.getContext('2d');
 const image=src=>{const im=new Image();im.src='assets/'+src+'?v=16';return im};
 const background=image('studio-futurist-v2.png'),ystScreen=image('yst-screen.png'),tikstage=image('tikstage.svg');
+const aquarium=document.createElement('video');aquarium.src='assets/aquarium-loop.mp4';aquarium.muted=true;aquarium.loop=true;aquarium.autoplay=true;aquarium.playsInline=true;aquarium.preload='auto';aquarium.play().catch(()=>{});
 const screen=document.createElement('canvas');screen.width=960;screen.height=480;const sg=screen.getContext('2d');
 const ready=im=>im.complete&&im.naturalWidth>0;
 const logos={tiktok:image('tiktok.png'),youtube:image('youtube.png'),kick:image('kick.svg')};
@@ -15,33 +16,36 @@ function messageState(t){const position=t/7,index=Math.floor(position)%messages.
 function display(t){
  const state=messageState(t),icon=state.index<2?Object.values(logos)[state.index]:null;
  g.save();
- // All housing, badge and reflected light belong to the room photograph.
- // Draw only the luminous contents, confined to the physical screen face.
- g.beginPath();g.rect(687,45,721,102);g.clip();g.globalAlpha=state.alpha;
- const centerY=96;
- if(icon&&ready(icon)){
-  g.save();g.shadowColor=state.index===2?'#53fc18':state.index===1?'#ff3535':'#24ddd9';g.shadowBlur=7;
-  if(state.index===0)g.drawImage(icon,1000,900,2000,2100,727,60,66,69);
-  else if(state.index===1)g.drawImage(icon,713,68,103,72);
-  else g.drawImage(icon,711,79,110,37);
-  g.restore();
- }
- const text=messages[state.index],left=icon?842:714,right=1380,available=right-left;
- let size=42;g.font='800 '+size+'px Barlow,"Segoe UI",Arial';while(g.measureText(text).width>available&&size>25){size--;g.font='800 '+size+'px Barlow,"Segoe UI",Arial'}
- g.textAlign='center';g.textBaseline='middle';g.fillStyle='#ffd34f';g.shadowColor='#f0b744';g.shadowBlur=5;
- g.fillText(text,(left+right)/2,centerY);g.shadowBlur=0;g.restore();
+ // Faceted ceiling module replaces the old rectangular sign and its badge.
+ const housing=[[461,14],[1428,14],[1460,46],[1460,156],[1419,190],[498,190],[461,153]];
+ g.beginPath();path(housing);g.fillStyle='#080d14';g.fill();g.lineWidth=2;g.strokeStyle='#34434d';g.stroke();
+ g.beginPath();path([[488,33],[1407,33],[1439,61],[1439,137],[1405,167],[521,167],[488,139]]);
+ const bg=g.createLinearGradient(0,33,0,167);bg.addColorStop(0,'#172530');bg.addColorStop(.5,'#070d14');bg.addColorStop(1,'#14212a');g.fillStyle=bg;g.fill();g.strokeStyle='#00d9f5';g.shadowColor='#00d9f5';g.shadowBlur=10;g.stroke();g.shadowBlur=0;
+ g.save();g.beginPath();path([[488,33],[1407,33],[1439,61],[1439,137],[1405,167],[521,167],[488,139]]);g.clip();
+ g.strokeStyle='#77dfea12';g.lineWidth=1;for(let x=480;x<1440;x+=24){g.beginPath();g.moveTo(x,34);g.lineTo(x,167);g.stroke()}for(let y=38;y<168;y+=18){g.beginPath();g.moveTo(480,y);g.lineTo(1440,y);g.stroke()}
+ const x=480+(t*90)%1100,shine=g.createLinearGradient(x-90,0,x+90,0);shine.addColorStop(0,'#00d9f500');shine.addColorStop(.5,'#00d9f51b');shine.addColorStop(1,'#00d9f500');g.fillStyle=shine;g.fillRect(x-90,34,180,134);
+ g.fillStyle='#ffd34f';g.font='bold 23px Barlow,Arial';g.fillText('KIP ZONE',517,72);g.font='12px Barlow,Arial';g.fillStyle='#8aa9b8';g.fillText('BROADCAST // LIVE',517,96);
+ g.strokeStyle='#ffd34f';g.lineWidth=2;g.beginPath();g.moveTo(659,53);g.lineTo(659,137);g.stroke();
+ g.globalAlpha=state.alpha;
+ if(icon&&ready(icon)){if(state.index===0)g.drawImage(icon,1000,900,2000,2100,686,74,44,46);else g.drawImage(icon,682,82,65,44)}
+ const left=icon?767:694,right=1379;let size=38;g.font='800 '+size+'px Barlow,Arial';while(g.measureText(messages[state.index]).width>right-left&&size>23){size--;g.font='800 '+size+'px Barlow,Arial'}
+ g.textAlign='center';g.textBaseline='middle';g.fillStyle='#f6f3e9';g.fillText(messages[state.index],(left+right)/2,102);g.restore();
+ g.strokeStyle='#ffd34f';g.lineWidth=3;g.beginPath();g.moveTo(551,181);g.lineTo(1363,181);g.stroke();
+ for(let i=0;i<5;i++){g.fillStyle=i<=Math.floor(t*2)%5?'#00d9f5':'#24404c';g.fillRect(1367+i*10,49,5,10)}
+ g.restore();
 }
 function crystal(t){const intensity=.10+.04*Math.sin(t*1.37)+.018*Math.sin(t*2.91+.8)+.01*Math.sin(t*4.13+2);g.save();g.beginPath();g.rect(1375,516,133,62);g.clip();g.globalCompositeOperation='screen';const light=g.createRadialGradient(1466,546,3,1466,546,47);light.addColorStop(0,`rgba(255,194,110,${intensity})`);light.addColorStop(.38,`rgba(255,165,72,${intensity*.75})`);light.addColorStop(1,'rgba(255,145,55,0)');g.fillStyle=light;g.fillRect(1417,517,91,61);g.restore()}
 function leds(t){g.save();g.globalCompositeOperation='screen';const cycle=t/45,hue=185+35*Math.sin(cycle),intensity=.16+.035*Math.sin(t*.45);[[425,241,125,0],[425,361,125,0],[425,558,125,0],[1375,244,108,1],[1375,382,108,1],[1375,478,108,1],[1375,599,108,1]].forEach(([x,y,w,side],i)=>{let color=`hsl(${side?30+25*Math.sin(cycle+.7):hue},100%,65%)`;g.strokeStyle=color;g.shadowColor=color;g.shadowBlur=18;g.globalAlpha=intensity+.025*Math.sin(t*.35+i);g.lineWidth=3;g.beginPath();g.moveTo(x,y);g.lineTo(x+w,y);g.stroke()});g.restore()}
 function tv(t){
- g.save();g.beginPath();path([[0,484],[352,529],[352,669],[0,718]]);g.clip();g.globalCompositeOperation='screen';
- const y=493+(t*24)%210,scan=g.createLinearGradient(0,y-18,0,y+18);scan.addColorStop(0,'rgba(0,217,245,0)');scan.addColorStop(.5,'rgba(0,217,245,.12)');scan.addColorStop(1,'rgba(0,217,245,0)');g.fillStyle=scan;g.fillRect(0,y-18,360,36);
- g.strokeStyle='rgba(100,240,255,.32)';g.lineWidth=1;g.beginPath();g.ellipse(265,590,38,48,0,t*.35,t*.35+Math.PI*1.4);g.stroke();g.restore();
+ if(aquarium.readyState<2)return;
+ g.save();g.beginPath();path([[0,480],[355,530],[355,670],[0,718]]);g.clip();
+ // The original clip already contains the perspective of the aquarium glass.
+ g.drawImage(aquarium,0,480,365,238);g.restore();
 }
 // Map the entire banner to the former aquarium glass, including its perspective.
 const glass=[[24,82],[332,246],[332,443],[24,354]];
 function screenPoint(u,v){return [24+308*u,82+164*u+(272-75*u)*v]}
-function screenTriangle(points,source){
+function screenTriangle(points,source,surface=screen){
  const [a,b,c]=points,[sa,sb,sc]=source;
  const den=(sb[0]-sa[0])*(sc[1]-sa[1])-(sc[0]-sa[0])*(sb[1]-sa[1]);
  const ax=((b[0]-a[0])*(sc[1]-sa[1])-(c[0]-a[0])*(sb[1]-sa[1]))/den;
@@ -53,7 +57,7 @@ function screenTriangle(points,source){
  const clipPoints=points.map(p=>{const dx=p[0]-cx,dy=p[1]-cy,len=Math.hypot(dx,dy);return [p[0]+dx/len*.75,p[1]+dy/len*.75]});
  g.save();g.beginPath();path(clipPoints);g.clip();
  g.transform(ax,ay,bx,by,a[0]-ax*sa[0]-bx*sa[1],a[1]-ay*sa[0]-by*sa[1]);
- g.drawImage(screen,0,0);g.restore();
+ g.drawImage(surface,0,0);g.restore();
 }
 function sponsorScreen(t){
  sg.fillStyle='#000';sg.fillRect(0,0,960,480);
