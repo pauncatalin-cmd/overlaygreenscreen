@@ -4,7 +4,7 @@
 'use strict';
 const c=document.querySelector('canvas'),g=c.getContext('2d');
 const image=src=>{const im=new Image();im.src='assets/'+src+'?v=16';return im};
-const background=image('studio-futurist.png'),ystScreen=image('yst-screen.png'),tikstage=image('tikstage.svg');
+const background=image('studio-futurist-v2.png'),ystScreen=image('yst-screen.png'),tikstage=image('tikstage.svg');
 const screen=document.createElement('canvas');screen.width=960;screen.height=480;const sg=screen.getContext('2d');
 const ready=im=>im.complete&&im.naturalWidth>0;
 const logos={tiktok:image('tiktok.png'),youtube:image('youtube.png'),kick:image('kick.svg')};
@@ -33,10 +33,14 @@ function display(t){
 }
 function crystal(t){const intensity=.10+.04*Math.sin(t*1.37)+.018*Math.sin(t*2.91+.8)+.01*Math.sin(t*4.13+2);g.save();g.beginPath();g.rect(1375,516,133,62);g.clip();g.globalCompositeOperation='screen';const light=g.createRadialGradient(1466,546,3,1466,546,47);light.addColorStop(0,`rgba(255,194,110,${intensity})`);light.addColorStop(.38,`rgba(255,165,72,${intensity*.75})`);light.addColorStop(1,'rgba(255,145,55,0)');g.fillStyle=light;g.fillRect(1417,517,91,61);g.restore()}
 function leds(t){g.save();g.globalCompositeOperation='screen';const cycle=t/45,hue=185+35*Math.sin(cycle),intensity=.16+.035*Math.sin(t*.45);[[425,241,125,0],[425,361,125,0],[425,558,125,0],[1375,244,108,1],[1375,382,108,1],[1375,478,108,1],[1375,599,108,1]].forEach(([x,y,w,side],i)=>{let color=`hsl(${side?30+25*Math.sin(cycle+.7):hue},100%,65%)`;g.strokeStyle=color;g.shadowColor=color;g.shadowBlur=18;g.globalAlpha=intensity+.025*Math.sin(t*.35+i);g.lineWidth=3;g.beginPath();g.moveTo(x,y);g.lineTo(x+w,y);g.stroke()});g.restore()}
-function tv(t){}
+function tv(t){
+ g.save();g.beginPath();path([[0,484],[352,529],[352,669],[0,718]]);g.clip();g.globalCompositeOperation='screen';
+ const y=493+(t*24)%210,scan=g.createLinearGradient(0,y-18,0,y+18);scan.addColorStop(0,'rgba(0,217,245,0)');scan.addColorStop(.5,'rgba(0,217,245,.12)');scan.addColorStop(1,'rgba(0,217,245,0)');g.fillStyle=scan;g.fillRect(0,y-18,360,36);
+ g.strokeStyle='rgba(100,240,255,.32)';g.lineWidth=1;g.beginPath();g.ellipse(265,590,38,48,0,t*.35,t*.35+Math.PI*1.4);g.stroke();g.restore();
+}
 // Map the entire banner to the former aquarium glass, including its perspective.
-const glass=[[0,475],[389,515],[389,662],[0,725]];
-function screenPoint(u,v){return [389*u,475+40*u+(250-103*u)*v]}
+const glass=[[24,82],[332,246],[332,443],[24,354]];
+function screenPoint(u,v){return [24+308*u,82+164*u+(272-75*u)*v]}
 function screenTriangle(points,source){
  const [a,b,c]=points,[sa,sb,sc]=source;
  const den=(sb[0]-sa[0])*(sc[1]-sa[1])-(sc[0]-sa[0])*(sb[1]-sa[1]);
@@ -95,6 +99,6 @@ function sponsorScreen(t){
 }
 
 let epoch=null,last=-Infinity;
-function frame(ms){requestAnimationFrame(frame);last=ms;if(epoch===null)epoch=ms;const t=(ms-epoch)/1000;g.clearRect(0,0,1920,1080);if(ready(background))g.drawImage(background,0,0,1920,1080);sponsorScreen(t);leds(t);crystal(t);display(t)}requestAnimationFrame(frame);
+function frame(ms){requestAnimationFrame(frame);last=ms;if(epoch===null)epoch=ms;const t=(ms-epoch)/1000;g.clearRect(0,0,1920,1080);if(ready(background))g.drawImage(background,0,0,1920,1080);sponsorScreen(t);tv(t);leds(t);crystal(t);display(t)}requestAnimationFrame(frame);
 </script></html>
 
