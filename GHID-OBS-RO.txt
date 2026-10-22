@@ -4,7 +4,7 @@ Scena păstrează logo-ul KIP pe perete, ecranul cu reclame YST/TikStage și acv
 Decor: mobilier antracit, mochetă gri, panouri acustice și iluminare albastru-violet.
 
 OBS — sursă Browser:
-URL: https://pauncatalin-cmd.github.io/overlaygreenscreen/overlay.html?v=gaming-room-2
+URL: https://pauncatalin-cmd.github.io/overlaygreenscreen/overlay.html?v=centered-tv-3
 Width: 1920
 Height: 1080
 FPS: 60 (sau 30 pentru consum redus)
@@ -13,4 +13,4 @@ După actualizare, apasă „Refresh cache of current page”.
 Pentru fișiere locale, păstrează folderul assets lângă overlay.html.
 Previzualizare: preview.html.
 Camera ta cu filtrul de chroma key se așază deasupra acestei surse în OBS.
-Reclamele alternează la 9 secunde. Acvariul pornește automat, fără sunet, în buclă.
+Televizorul central alternează YST, TikStage și logo KIP la 9 secunde. Acvariul are imagine fixă cu lumină de apă animată discret; peștii nu sunt animați.
