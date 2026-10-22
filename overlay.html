@@ -8,6 +8,12 @@ const c=document.querySelector('canvas'),g=c.getContext('2d');
 const load=name=>{const im=new Image();im.src='assets/'+name;return im};
 const background=load('studio-centered-tv-raised.png'),yst=load('yst-screen.png'),tikstage=load('tikstage.svg'),logo=load('kip-emblem.png');
 const ready=im=>im.complete&&im.naturalWidth>0;
+const aquariumPoster=load('aquarium-natural-poster.png');
+const aquariumVideo=document.createElement('video');
+aquariumVideo.src='assets/aquarium-natural-loop.mp4';
+aquariumVideo.muted=true;aquariumVideo.loop=true;aquariumVideo.autoplay=true;aquariumVideo.playsInline=true;aquariumVideo.preload='auto';
+const playAquarium=()=>aquariumVideo.play().catch(()=>{});playAquarium();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)playAquarium()});
 // All display coordinates use the native artwork grid, avoiding perspective warps.
 const W=1672,H=941,tv={x:550,y:52,w:573,h:294};
 function contain(im,x,y,w,h){if(!ready(im))return;const s=Math.min(w/im.naturalWidth,h/im.naturalHeight);const iw=im.naturalWidth*s,ih=im.naturalHeight*s;g.drawImage(im,x+(w-iw)/2,y+(h-ih)/2,iw,ih)}
@@ -26,10 +32,16 @@ function television(t){
  // A restrained reflection belongs to the physical TV glass, not to its content.
  const reflection=g.createLinearGradient(tv.x,tv.y,tv.x+tv.w,tv.y+tv.h);reflection.addColorStop(0,'rgba(150,190,220,.025)');reflection.addColorStop(.6,'rgba(150,190,220,0)');g.fillStyle=reflection;g.fillRect(tv.x,tv.y,tv.w,tv.h);g.restore();
 }
-function aquarium(t){
- // Keep the photographic planted aquarium intact; animate only very subtle water light.
- g.save();g.beginPath();g.rect(0,303,271,175);g.clip();g.globalCompositeOperation='screen';
- for(let i=0;i<3;i++){const x=-70+((t*7+i*105)%430);const light=g.createLinearGradient(x-35,0,x+35,0);light.addColorStop(0,'rgba(190,230,240,0)');light.addColorStop(.5,'rgba(190,230,240,.018)');light.addColorStop(1,'rgba(190,230,240,0)');g.fillStyle=light;g.fillRect(x-35,303,70,175)}
+function aquarium(){
+ const source=aquariumVideo.readyState>=2?aquariumVideo:ready(aquariumPoster)?aquariumPoster:null;
+ if(!source)return;
+ const sw=source.videoWidth||source.naturalWidth,sh=source.videoHeight||source.naturalHeight;
+ const glass={x:0,y:301,w:270,h:179},ratio=glass.w/glass.h;
+ let sx=0,sy=0,cw=sw,ch=sh;
+ if(sw/sh>ratio){cw=sh*ratio;sx=(sw-cw)/2}else{ch=sw/ratio;sy=(sh-ch)/2}
+ // One continuous crop keeps fish proportions and glass edges intact; no mesh distortion.
+ g.save();g.beginPath();g.rect(glass.x,glass.y,glass.w,glass.h);g.clip();
+ g.drawImage(source,sx,sy,cw,ch,glass.x,glass.y,glass.w,glass.h);
  g.restore();
 }
 let start=null,last=-Infinity;
