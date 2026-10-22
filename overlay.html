@@ -1,64 +1,45 @@
-<!doctype html><html lang="ro"><meta charset="utf-8"><title>KIP ZONE — Studio futurist</title>
-<style>@font-face{font-family:Barlow;src:url(assets/font-4.ttf)}html,body{margin:0;background:#08090b;overflow:hidden}canvas{display:block;width:100vw;height:auto}</style>
-<canvas width="1920" height="1080" aria-label="Studio KIP cu acvariu video și panou SF animat"></canvas><script>
+<!doctype html>
+<html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KIP — Cameră de gaming</title>
+<style>@font-face{font-family:Barlow;src:url(assets/font-4.ttf)}html,body{margin:0;width:100%;height:100%;background:#08090b;overflow:hidden}body{display:grid;place-items:center}canvas{display:block;width:min(100vw,177.7778vh);height:auto;aspect-ratio:16/9}</style></head>
+<body><canvas width="1920" height="1080" aria-label="Cameră de gaming KIP, cu reclame animate și acvariu video în stânga"></canvas><script>
 'use strict';
 const c=document.querySelector('canvas'),g=c.getContext('2d');
-const image=src=>{const im=new Image();im.src='assets/'+src+'?v=16';return im};
-const background=image('studio-futurist-v2.png'),ystScreen=image('yst-screen.png'),tikstage=image('tikstage.svg');
+const image=src=>{const im=new Image();im.src='assets/'+src+'?v=gaming-room-1';return im};
+const background=image('studio-gaming-room.png'),ystScreen=image('yst-screen.png'),tikstage=image('tikstage.svg');
+const ready=im=>im.complete&&im.naturalWidth>0;
 const aquarium=document.createElement('video');aquarium.src='assets/aquarium-loop.mp4';aquarium.muted=true;aquarium.loop=true;aquarium.autoplay=true;aquarium.playsInline=true;aquarium.preload='auto';aquarium.play().catch(()=>{});
 const screen=document.createElement('canvas');screen.width=960;screen.height=480;const sg=screen.getContext('2d');
-const ready=im=>im.complete&&im.naturalWidth>0;
-const logos={tiktok:image('tiktok.png'),youtube:image('youtube.png'),kick:image('kick.svg')};
-const messages=['TIKTOK: KIP.RO','YOUTUBE: KIPANU','KIP ZONE','NU UITA DE FOLLOW!','HAI CU TAP TAP-URILE!','YST · COD KIP · -10%','TIKSTAGE · KIP20 · -20%'];
+const fish=document.createElement('canvas');fish.width=365;fish.height=238;const fg=fish.getContext('2d');
+// Coordinates follow the glass inside the generated 1672 × 941 room artwork.
+const roomQuad=points=>points.map(([x,y])=>[x*1920/1672,y*1080/941]);
+const advertisingGlass=roomQuad([[30,80],[304,157],[304,348],[30,326]]);
+const aquariumGlass=roomQuad([[20,381],[328,400],[328,548],[20,563]]);
+// Crop baked-in stretched borders from the existing aquarium footage.
+const fishGlass=[[4,30],[360,30],[360,160],[4,160]];
 function path(points){g.moveTo(...points[0]);for(let i=1;i<points.length;i++)g.lineTo(...points[i]);g.closePath()}
-function box(x,y,w,h,r,fill){g.fillStyle=fill;g.beginPath();g.roundRect(x,y,w,h,r);g.fill()}
-function messageState(t){const position=t/7,index=Math.floor(position)%messages.length,phase=(position%1)*7;return {index,alpha:Math.min(1,phase/.45,(7-phase)/.45)}}
-function display(t){
- const state=messageState(t),icon=state.index<2?Object.values(logos)[state.index]:null;
- g.save();
- // Faceted ceiling module replaces the old rectangular sign and its badge.
- const housing=[[461,14],[1428,14],[1460,46],[1460,156],[1419,190],[498,190],[461,153]];
- g.beginPath();path(housing);g.fillStyle='#080d14';g.fill();g.lineWidth=2;g.strokeStyle='#34434d';g.stroke();
- g.beginPath();path([[488,33],[1407,33],[1439,61],[1439,137],[1405,167],[521,167],[488,139]]);
- const bg=g.createLinearGradient(0,33,0,167);bg.addColorStop(0,'#172530');bg.addColorStop(.5,'#070d14');bg.addColorStop(1,'#14212a');g.fillStyle=bg;g.fill();g.strokeStyle='#00d9f5';g.shadowColor='#00d9f5';g.shadowBlur=10;g.stroke();g.shadowBlur=0;
- g.save();g.beginPath();path([[488,33],[1407,33],[1439,61],[1439,137],[1405,167],[521,167],[488,139]]);g.clip();
- g.strokeStyle='#77dfea12';g.lineWidth=1;for(let x=480;x<1440;x+=24){g.beginPath();g.moveTo(x,34);g.lineTo(x,167);g.stroke()}for(let y=38;y<168;y+=18){g.beginPath();g.moveTo(480,y);g.lineTo(1440,y);g.stroke()}
- const x=480+(t*90)%1100,shine=g.createLinearGradient(x-90,0,x+90,0);shine.addColorStop(0,'#00d9f500');shine.addColorStop(.5,'#00d9f51b');shine.addColorStop(1,'#00d9f500');g.fillStyle=shine;g.fillRect(x-90,34,180,134);
- g.fillStyle='#ffd34f';g.font='bold 23px Barlow,Arial';g.fillText('KIP ZONE',517,72);g.font='12px Barlow,Arial';g.fillStyle='#8aa9b8';g.fillText('BROADCAST // LIVE',517,96);
- g.strokeStyle='#ffd34f';g.lineWidth=2;g.beginPath();g.moveTo(659,53);g.lineTo(659,137);g.stroke();
- g.globalAlpha=state.alpha;
- if(icon&&ready(icon)){if(state.index===0)g.drawImage(icon,1000,900,2000,2100,686,74,44,46);else g.drawImage(icon,682,82,65,44)}
- const left=icon?767:694,right=1379;let size=38;g.font='800 '+size+'px Barlow,Arial';while(g.measureText(messages[state.index]).width>right-left&&size>23){size--;g.font='800 '+size+'px Barlow,Arial'}
- g.textAlign='center';g.textBaseline='middle';g.fillStyle='#f6f3e9';g.fillText(messages[state.index],(left+right)/2,102);g.restore();
- g.strokeStyle='#ffd34f';g.lineWidth=3;g.beginPath();g.moveTo(551,181);g.lineTo(1363,181);g.stroke();
- for(let i=0;i<5;i++){g.fillStyle=i<=Math.floor(t*2)%5?'#00d9f5':'#24404c';g.fillRect(1367+i*10,49,5,10)}
- g.restore();
-}
-function crystal(t){const intensity=.10+.04*Math.sin(t*1.37)+.018*Math.sin(t*2.91+.8)+.01*Math.sin(t*4.13+2);g.save();g.beginPath();g.rect(1375,516,133,62);g.clip();g.globalCompositeOperation='screen';const light=g.createRadialGradient(1466,546,3,1466,546,47);light.addColorStop(0,`rgba(255,194,110,${intensity})`);light.addColorStop(.38,`rgba(255,165,72,${intensity*.75})`);light.addColorStop(1,'rgba(255,145,55,0)');g.fillStyle=light;g.fillRect(1417,517,91,61);g.restore()}
-function leds(t){g.save();g.globalCompositeOperation='screen';const cycle=t/45,hue=185+35*Math.sin(cycle),intensity=.16+.035*Math.sin(t*.45);[[425,241,125,0],[425,361,125,0],[425,558,125,0],[1375,244,108,1],[1375,382,108,1],[1375,478,108,1],[1375,599,108,1]].forEach(([x,y,w,side],i)=>{let color=`hsl(${side?30+25*Math.sin(cycle+.7):hue},100%,65%)`;g.strokeStyle=color;g.shadowColor=color;g.shadowBlur=18;g.globalAlpha=intensity+.025*Math.sin(t*.35+i);g.lineWidth=3;g.beginPath();g.moveTo(x,y);g.lineTo(x+w,y);g.stroke()});g.restore()}
-function tv(t){
- if(aquarium.readyState<2)return;
- g.save();g.beginPath();path([[0,480],[355,530],[355,670],[0,718]]);g.clip();
- // The original clip already contains the perspective of the aquarium glass.
- g.drawImage(aquarium,0,480,365,238);g.restore();
-}
-// Map the entire banner to the former aquarium glass, including its perspective.
-const glass=[[24,82],[332,246],[332,443],[24,354]];
-function screenPoint(u,v){return [24+308*u,82+164*u+(272-75*u)*v]}
-function screenTriangle(points,source,surface=screen){
- const [a,b,c]=points,[sa,sb,sc]=source;
+function point(quad,u,v){return [0,1].map(k=>(1-v)*((1-u)*quad[0][k]+u*quad[1][k])+v*((1-u)*quad[3][k]+u*quad[2][k]))}
+function triangle(surface,dest,source){
+ const [a,b,c]=dest,[sa,sb,sc]=source;
  const den=(sb[0]-sa[0])*(sc[1]-sa[1])-(sc[0]-sa[0])*(sb[1]-sa[1]);
  const ax=((b[0]-a[0])*(sc[1]-sa[1])-(c[0]-a[0])*(sb[1]-sa[1]))/den;
  const ay=((b[1]-a[1])*(sc[1]-sa[1])-(c[1]-a[1])*(sb[1]-sa[1]))/den;
  const bx=((c[0]-a[0])*(sb[0]-sa[0])-(b[0]-a[0])*(sc[0]-sa[0]))/den;
  const by=((c[1]-a[1])*(sb[0]-sa[0])-(b[1]-a[1])*(sc[0]-sa[0]))/den;
- // Overlap triangle clips slightly to avoid dark antialias seams.
  const cx=(a[0]+b[0]+c[0])/3,cy=(a[1]+b[1]+c[1])/3;
- const clipPoints=points.map(p=>{const dx=p[0]-cx,dy=p[1]-cy,len=Math.hypot(dx,dy);return [p[0]+dx/len*.75,p[1]+dy/len*.75]});
- g.save();g.beginPath();path(clipPoints);g.clip();
- g.transform(ax,ay,bx,by,a[0]-ax*sa[0]-bx*sa[1],a[1]-ay*sa[0]-by*sa[1]);
- g.drawImage(surface,0,0);g.restore();
+ const expanded=dest.map(p=>{const dx=p[0]-cx,dy=p[1]-cy,len=Math.hypot(dx,dy);return [p[0]+dx/len*.5,p[1]+dy/len*.5]});
+ g.save();g.beginPath();path(expanded);g.clip();g.transform(ax,ay,bx,by,a[0]-ax*sa[0]-bx*sa[1],a[1]-ay*sa[0]-by*sa[1]);g.drawImage(surface,0,0);g.restore();
 }
+function drawQuad(surface,dest,source=[[0,0],[surface.width,0],[surface.width,surface.height],[0,surface.height]]){
+ g.save();g.beginPath();path(dest);g.clip();g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
+ const columns=24;
+ for(let i=0;i<columns;i++){
+  const u=i/columns,v=(i+1)/columns;
+  const a=point(dest,u,0),b=point(dest,v,0),c=point(dest,v,1),d=point(dest,u,1);
+  const sa=point(source,u,0),sb=point(source,v,0),sc=point(source,v,1),sd=point(source,u,1);
+  triangle(surface,[a,b,d],[sa,sb,sd]);triangle(surface,[b,c,d],[sb,sc,sd]);
+ }g.restore();
+}
+function tv(){if(aquarium.readyState<2)return;fg.drawImage(aquarium,0,0,365,238);drawQuad(fish,aquariumGlass,fishGlass)}
 function sponsorScreen(t){
  sg.fillStyle='#000';sg.fillRect(0,0,960,480);
  if(Math.floor(t/9)%2===0){
@@ -89,20 +70,10 @@ function sponsorScreen(t){
  const reflection=sg.createLinearGradient(0,0,0,480);
  reflection.addColorStop(0,'rgba(174,223,255,.08)');reflection.addColorStop(.3,'rgba(174,223,255,0)');reflection.addColorStop(1,'rgba(0,0,0,.1)');
  sg.fillStyle=reflection;sg.fillRect(0,0,960,480);
- g.save();g.beginPath();path(glass);g.clip();
- g.fillStyle='#000';g.fillRect(0,475,390,250);
- g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
- const columns=24;
- for(let i=0;i<columns;i++){
-  const u=i/columns,v=(i+1)/columns,x=u*960,xx=v*960;
-  const a=screenPoint(u,0),b=screenPoint(v,0),c=screenPoint(v,1),d=screenPoint(u,1);
-  screenTriangle([a,b,d],[[x,0],[xx,0],[x,480]]);
-  screenTriangle([b,c,d],[[xx,0],[xx,480],[x,480]]);
- }
- g.restore();
+
+ drawQuad(screen,advertisingGlass);
 }
 
 let epoch=null,last=-Infinity;
-function frame(ms){requestAnimationFrame(frame);last=ms;if(epoch===null)epoch=ms;const t=(ms-epoch)/1000;g.clearRect(0,0,1920,1080);if(ready(background))g.drawImage(background,0,0,1920,1080);sponsorScreen(t);tv(t);leds(t);crystal(t);display(t)}requestAnimationFrame(frame);
-</script></html>
-
+function frame(ms){requestAnimationFrame(frame);if(document.hidden||ms-last<1000/60-.5)return;last=ms;if(epoch===null)epoch=ms;const t=(ms-epoch)/1000;g.clearRect(0,0,1920,1080);if(ready(background)){g.drawImage(background,0,0,1920,1080);sponsorScreen(t);tv()}}requestAnimationFrame(frame);
+</script></body></html>

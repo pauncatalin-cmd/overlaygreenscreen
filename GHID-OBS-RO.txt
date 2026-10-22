@@ -1,11 +1,16 @@
-STUDIO KIP — ECRAN YST IN LOCUL ACVARIULUI
+CAMERĂ DE GAMING KIP — SCENA REALISTĂ
 
-1. Extrage arhiva intr-un folder permanent.
-2. In OBS, la sursa Browser a studioului, selecteaza Local file: overlay.html din noul folder.
-3. Width 1920, Height 1080, 30 FPS. Apasa Refresh cache of current page.
-4. Pentru previzualizare separata, deschide preview.html in browser.
+Scena păstrează logo-ul KIP pe perete, ecranul cu reclame YST/TikStage și acvariul animat în stânga.
+Decor: mobilier antracit, mochetă gri, panouri acustice și iluminare albastru-violet.
 
-Overlay-ul deseneaza intregul decor. Ecranul YST acopera integral suprafata fostului acvariu si urmareste perspectiva ramei. Lumina albastra, particulele si reflexul lent sunt animate direct in overlay. Nu este nevoie de script Lua, de sursa video cu pesti sau de sursa separata YST.
-Panoul de sus continua sa alterneze mesajele originale, cu KIPZONE langa sigla KICK.
-Widgetul TikStage nu este inclus in acest ecran.
-Daca ai o sursa separata pentru vechiul acvariu sau un banner YST suplimentar deasupra studioului, dezactiveaz-o pentru a evita suprapunerea.
+OBS — sursă Browser:
+URL: https://pauncatalin-cmd.github.io/overlaygreenscreen/overlay.html?v=gaming-room-1
+Width: 1920
+Height: 1080
+FPS: 60 (sau 30 pentru consum redus)
+După actualizare, apasă „Refresh cache of current page”.
+
+Pentru fișiere locale, păstrează folderul assets lângă overlay.html.
+Previzualizare: preview.html.
+Camera ta cu filtrul de chroma key se așază deasupra acestei surse în OBS.
+Reclamele alternează la 9 secunde. Acvariul pornește automat, fără sunet, în buclă.
