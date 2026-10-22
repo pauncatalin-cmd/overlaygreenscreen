@@ -4,7 +4,7 @@ Scena păstrează logo-ul KIP pe perete, ecranul cu reclame YST/TikStage și acv
 Decor: mobilier antracit, mochetă gri, panouri acustice și iluminare albastru-violet.
 
 OBS — sursă Browser:
-URL: https://pauncatalin-cmd.github.io/overlaygreenscreen/overlay.html?v=gaming-room-1
+URL: https://pauncatalin-cmd.github.io/overlaygreenscreen/overlay.html?v=gaming-room-2
 Width: 1920
 Height: 1080
 FPS: 60 (sau 30 pentru consum redus)

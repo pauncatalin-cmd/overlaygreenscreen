@@ -4,8 +4,8 @@
 <body><canvas width="1920" height="1080" aria-label="Cameră de gaming KIP, cu reclame animate și acvariu video în stânga"></canvas><script>
 'use strict';
 const c=document.querySelector('canvas'),g=c.getContext('2d');
-const image=src=>{const im=new Image();im.src='assets/'+src+'?v=gaming-room-1';return im};
-const background=image('studio-gaming-room.png'),ystScreen=image('yst-screen.png'),tikstage=image('tikstage.svg');
+const image=src=>{const im=new Image();im.src='assets/'+src+'?v=gaming-room-2';return im};
+const background=image('studio-gaming-room-v2.png'),ystScreen=image('yst-screen.png'),tikstage=image('tikstage.svg');
 const ready=im=>im.complete&&im.naturalWidth>0;
 const aquarium=document.createElement('video');aquarium.src='assets/aquarium-loop.mp4';aquarium.muted=true;aquarium.loop=true;aquarium.autoplay=true;aquarium.playsInline=true;aquarium.preload='auto';aquarium.play().catch(()=>{});
 const screen=document.createElement('canvas');screen.width=960;screen.height=480;const sg=screen.getContext('2d');
@@ -15,7 +15,7 @@ const roomQuad=points=>points.map(([x,y])=>[x*1920/1672,y*1080/941]);
 const advertisingGlass=roomQuad([[30,80],[304,157],[304,348],[30,326]]);
 const aquariumGlass=roomQuad([[20,381],[328,400],[328,548],[20,563]]);
 // Crop baked-in stretched borders from the existing aquarium footage.
-const fishGlass=[[4,30],[360,30],[360,160],[4,160]];
+const fishGlass=[[69,25],[295,25],[295,160],[69,160]];
 function path(points){g.moveTo(...points[0]);for(let i=1;i<points.length;i++)g.lineTo(...points[i]);g.closePath()}
 function point(quad,u,v){return [0,1].map(k=>(1-v)*((1-u)*quad[0][k]+u*quad[1][k])+v*((1-u)*quad[3][k]+u*quad[2][k]))}
 function triangle(surface,dest,source){
@@ -26,12 +26,12 @@ function triangle(surface,dest,source){
  const bx=((c[0]-a[0])*(sb[0]-sa[0])-(b[0]-a[0])*(sc[0]-sa[0]))/den;
  const by=((c[1]-a[1])*(sb[0]-sa[0])-(b[1]-a[1])*(sc[0]-sa[0]))/den;
  const cx=(a[0]+b[0]+c[0])/3,cy=(a[1]+b[1]+c[1])/3;
- const expanded=dest.map(p=>{const dx=p[0]-cx,dy=p[1]-cy,len=Math.hypot(dx,dy);return [p[0]+dx/len*.5,p[1]+dy/len*.5]});
+ const expanded=dest.map(p=>{const dx=p[0]-cx,dy=p[1]-cy,len=Math.hypot(dx,dy);return [p[0]+Math.sign(dx),p[1]+Math.sign(dy)]});
  g.save();g.beginPath();path(expanded);g.clip();g.transform(ax,ay,bx,by,a[0]-ax*sa[0]-bx*sa[1],a[1]-ay*sa[0]-by*sa[1]);g.drawImage(surface,0,0);g.restore();
 }
 function drawQuad(surface,dest,source=[[0,0],[surface.width,0],[surface.width,surface.height],[0,surface.height]]){
  g.save();g.beginPath();path(dest);g.clip();g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
- const columns=24;
+ const columns=surface===fish?1:24;
  for(let i=0;i<columns;i++){
   const u=i/columns,v=(i+1)/columns;
   const a=point(dest,u,0),b=point(dest,v,0),c=point(dest,v,1),d=point(dest,u,1);
