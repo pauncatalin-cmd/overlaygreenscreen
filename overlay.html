@@ -6,10 +6,10 @@
 'use strict';
 const c=document.querySelector('canvas'),g=c.getContext('2d');
 const load=name=>{const im=new Image();im.src='assets/'+name;return im};
-const background=load('studio-centered-tv.png'),yst=load('yst-screen.png'),tikstage=load('tikstage.svg'),logo=load('kip-emblem.png');
+const background=load('studio-centered-tv-raised.png'),yst=load('yst-screen.png'),tikstage=load('tikstage.svg'),logo=load('kip-emblem.png');
 const ready=im=>im.complete&&im.naturalWidth>0;
 // All display coordinates use the native artwork grid, avoiding perspective warps.
-const W=1672,H=941,tv={x:550,y:96,w:573,h:313};
+const W=1672,H=941,tv={x:550,y:52,w:573,h:294};
 function contain(im,x,y,w,h){if(!ready(im))return;const s=Math.min(w/im.naturalWidth,h/im.naturalHeight);const iw=im.naturalWidth*s,ih=im.naturalHeight*s;g.drawImage(im,x+(w-iw)/2,y+(h-ih)/2,iw,ih)}
 function television(t){
  g.save();g.beginPath();g.rect(tv.x,tv.y,tv.w,tv.h);g.clip();g.fillStyle='#050609';g.fillRect(tv.x,tv.y,tv.w,tv.h);
