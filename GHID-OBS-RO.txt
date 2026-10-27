@@ -4,7 +4,7 @@ Scena păstrează logo-ul KIP pe perete, ecranul cu reclame YST/TikStage și acv
 Decor: mobilier antracit, mochetă gri, panouri acustice și iluminare albastru-violet.
 
 OBS — sursă Browser:
-URL: https://pauncatalin-cmd.github.io/overlaygreenscreen/overlay.html?v=natural-aquarium-4
+URL: https://pauncatalin-cmd.github.io/overlaygreenscreen/overlay.html?v=halloween-2026
 Width: 1920
 Height: 1080
 FPS: 60 (sau 30 pentru consum redus)
@@ -14,3 +14,7 @@ Pentru fișiere locale, păstrează folderul assets lângă overlay.html.
 Previzualizare: preview.html.
 Camera ta cu filtrul de chroma key se așază deasupra acestei surse în OBS.
 Televizorul central alternează YST, TikStage și logo KIP la 9 secunde. Acvariul folosește o secvență video de 10 secunde, 1080p, cu pești în mișcare, redată automat în buclă, fără sunet.
+
+Tema Halloween 2026: dovleci realiști cu lumină de lumânare animată.
+Revenire automată la scena originală: 2 noiembrie 2026, 00:00, Europe/Berlin, inclusiv dacă sursa OBS rămâne deschisă.
+Revenire imediată: overlay.html?theme=normal

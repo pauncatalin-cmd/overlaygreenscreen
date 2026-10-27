@@ -44,7 +44,37 @@ function aquarium(){
  g.drawImage(source,sx,sy,cw,ch,glass.x,glass.y,glass.w,glass.h);
  g.restore();
 }
+
+const seasonalBackground=new Image();seasonalBackground.src='assets/studio-halloween-2026.png';
+const halloweenStart=Date.parse('2026-10-27T00:00:00+01:00');
+const halloweenEnd=Date.parse('2026-11-02T00:00:00+01:00');
+function halloweenActive(now=Date.now()){return new URLSearchParams(location.search).get('theme')!=='normal'&&now>=halloweenStart&&now<halloweenEnd}
+const candleMasks=[];
+seasonalBackground.addEventListener('load',()=>{
+ for(const area of [{x:325,y:605,w:100,h:90},{x:446,y:638,w:53,h:56},{x:1473,y:607,w:94,h:90},{x:1595,y:642,w:49,h:57}]){
+  const mask=document.createElement('canvas');mask.width=area.w;mask.height=area.h;const ctx=mask.getContext('2d');
+  ctx.drawImage(seasonalBackground,area.x,area.y,area.w,area.h,0,0,area.w,area.h);
+  let pixels;try{pixels=ctx.getImageData(0,0,area.w,area.h)}catch{return}
+  for(let i=0;i<pixels.data.length;i+=4){const r=pixels.data[i],green=pixels.data[i+1],b=pixels.data[i+2];pixels.data[i+3]=(r>210&&green>125&&r>b*1.5)?Math.min(255,(green-125)*2):0}
+  ctx.putImageData(pixels,0,0);const flame=document.createElement('canvas');flame.width=area.w;flame.height=area.h;candleMasks.push({mask,flame,...area});
+ }
+});
+function halloween(t){
+ if(!halloweenActive()||!ready(seasonalBackground))return;
+ g.save();g.globalCompositeOperation='screen';
+ candleMasks.forEach((a,i)=>{
+  const pulse=.12+.07*Math.sin(t*6.3+i*2)+.04*Math.sin(t*13.7+i)+.025*Math.sin(t*23.1+i*3);
+  g.globalAlpha=Math.max(.015,pulse);g.drawImage(a.mask,a.x,a.y,a.w,a.h);
+  // Soft candle flame sits inside the open mouth, clipped to the carved opening.
+  const flame=a.flame,f=flame.getContext('2d');f.globalCompositeOperation='source-over';f.clearRect(0,0,a.w,a.h);
+  const x=a.w*.49+Math.sin(t*5+i)*1.3,y=a.h*.73,h=9+Math.sin(t*8+i)*2;
+  const glow=f.createRadialGradient(x,y,0,x,y,h);glow.addColorStop(0,'#fffde0');glow.addColorStop(.25,'#ffe7a0');glow.addColorStop(.6,'#ffb32c90');glow.addColorStop(1,'#ff960000');
+  f.fillStyle=glow;f.beginPath();f.ellipse(x,y,4,h,Math.sin(t*4+i)*.12,0,Math.PI*2);f.fill();f.globalCompositeOperation='destination-in';f.drawImage(a.mask,0,0);
+  g.globalAlpha=.7;g.drawImage(flame,a.x,a.y);
+ });g.restore();
+}
+
 let start=null,last=-Infinity;
-function frame(ms){requestAnimationFrame(frame);if(document.hidden||ms-last<1000/60-.5)return;last=ms;if(start===null)start=ms;const t=(ms-start)/1000;if(!ready(background))return;g.setTransform(c.width/W,0,0,c.height/H,0,0);g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';g.drawImage(background,0,0,W,H);television(t);aquarium(t)}
+function frame(ms){requestAnimationFrame(frame);if(document.hidden||ms-last<1000/60-.5)return;last=ms;if(start===null)start=ms;const t=(ms-start)/1000;if(!ready(background))return;g.setTransform(c.width/W,0,0,c.height/H,0,0);g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';g.drawImage(halloweenActive()&&ready(seasonalBackground)?seasonalBackground:background,0,0,W,H);television(t);aquarium(t);halloween(t)}
 requestAnimationFrame(frame);
 </script></body></html>
