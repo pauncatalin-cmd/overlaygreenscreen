@@ -1,20 +1,18 @@
-CAMERĂ DE GAMING KIP — SCENA REALISTĂ
+CAMERĂ DE GAMING KIPZONE — GTA VI
 
-Scena păstrează logo-ul KIP pe perete, ecranul cu reclame YST/TikStage și acvariul animat în stânga.
-Decor: mobilier antracit, mochetă gri, panouri acustice și iluminare albastru-violet.
+Scenă inspirată de Vice City, cu decor Art Deco, lumini neon și apus peste oraș.
+Televizorul alternează logo-ul oficial GTA VI, YST, TikStage și emblema KIP la 9 secunde.
+Acvariul redă automat clipul original cu pești, în buclă și fără sunet.
 
-OBS — sursă Browser:
-URL: https://pauncatalin-cmd.github.io/overlaygreenscreen/overlay.html?v=halloween-2026
-Width: 1920
-Height: 1080
-FPS: 60 (sau 30 pentru consum redus)
+OBS — sursă Browser
+https://pauncatalin-cmd.github.io/overlaygreenscreen/overlay.html?v=gta-vi
+Lățime 1920, înălțime 1080, 60 FPS (sau 30 FPS pentru consum redus).
+Pune camera cu filtrul Chroma Key deasupra sursei Browser.
 După actualizare, apasă „Refresh cache of current page”.
 
-Pentru fișiere locale, păstrează folderul assets lângă overlay.html.
+Pentru utilizare locală, păstrează folderul assets lângă overlay.html.
 Previzualizare: preview.html.
-Camera ta cu filtrul de chroma key se așază deasupra acestei surse în OBS.
-Televizorul central alternează YST, TikStage și logo KIP la 9 secunde. Acvariul folosește o secvență video de 10 secunde, 1080p, cu pești în mișcare, redată automat în buclă, fără sunet.
+Scena clasică: overlay.html?theme=normal.
 
-Tema Halloween 2026: dovleci realiști cu lumină de lumânare animată.
-Revenire automată la scena originală: 2 noiembrie 2026, 00:00, Europe/Berlin, inclusiv dacă sursa OBS rămâne deschisă.
-Revenire imediată: overlay.html?theme=normal
+Logo oficial: Rockstar Games, https://www.rockstargames.com/VI
+Fonturi: Barlow și Barlow Condensed, sub licența SIL Open Font License.

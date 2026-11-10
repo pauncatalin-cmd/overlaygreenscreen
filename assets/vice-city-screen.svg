@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="573" height="301" viewBox="0 0 573 301">
+  <defs>
+    <linearGradient id="sky" x2="0" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#191025"/>
+      <stop offset=".61" stop-color="#371636"/>
+      <stop offset="1" stop-color="#752b4d"/>
+    </linearGradient>
+    <linearGradient id="trim">
+      <stop stop-color="#8c76ff"/>
+      <stop offset=".51" stop-color="#ff86c1"/>
+      <stop offset="1" stop-color="#ffb17b"/>
+    </linearGradient>
+    <pattern id="scan" width="1" height="5" patternUnits="userSpaceOnUse">
+      <path d="M0 .5h1" stroke="#fff" stroke-opacity=".06"/>
+    </pattern>
+    <path id="palm" d="M58 450Q65 309 122 178Q80 131 16 179Q54 120 116 154Q75 83 8 111Q67 69 123 141Q119 76 78 45Q141 56 143 139Q171 55 239 62Q186 87 161 145Q221 102 282 146Q213 124 167 162Q223 150 248 212Q195 177 146 177Q107 308 111 450Z"/>
+  </defs>
+  <path d="M0 0h573v301H0z" fill="url(#sky)"/>
+  <circle cx="287" cy="308" r="164" fill="#ff9a70" opacity=".14"/>
+  <circle cx="287" cy="308" r="164" fill="url(#scan)"/>
+  <g fill="#1d1028" opacity=".85">
+    <use href="#palm" transform="translate(-9 94) scale(.46)"/>
+    <use href="#palm" transform="translate(577 139) scale(-.36 .36)"/>
+    <path d="M0 289h58v-14h22v14h14v-21h27v19h27v-8h24v9h19v-17h17v20h163v-11h34v9h24v-20h22v19h25v-12h21v13h76v12H0z"/>
+  </g>
+  <path d="M0 2h573M0 299h573" fill="none" stroke="url(#trim)" stroke-width="2"/>
+</svg>
