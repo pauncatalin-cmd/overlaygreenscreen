@@ -46,13 +46,21 @@
   #xmas .glowbit,#xmas .flake{animation:none}
   #xmas .glowbit{opacity:.9;transform:none}
 }
+
+html.only-xmas,html.only-xmas body{background:transparent}
+html.only-xmas #stage{height:min(100vh,56.25vw)}
+html.only-xmas #stage canvas{display:none}
 </style></head><body>
-<!-- Crăciun: ?xmas=1 implicit pornit, ?xmas=0 oprește instalațiile de pe cadru -->
+<!-- Crăciun: ?xmas=1 implicit pornit, ?xmas=0 oprește instalațiile de pe cadru. ?only=xmas desenează doar instalațiile, pe fundal transparent, fără scena camerei. -->
 <div id="stage">
 <canvas width="1920" height="1080" aria-label="Cameră gaming cu televizor central, reclame YST și TikStage, logo KIP și acvariu"></canvas>
 </div>
 <script>
 'use strict';
+const qs=new URLSearchParams(location.search);
+const onlyXmas=/^(1|true|yes|on|xmas|lights)$/i.test((qs.get('only')||'').trim());
+if(onlyXmas) document.documentElement.classList.add('only-xmas');
+if(!onlyXmas){
 const c=document.querySelector('canvas'),g=c.getContext('2d');
 const load=name=>{const im=new Image();im.src='assets/'+name;return im};
 const background=load('studio-centered-tv-raised.png'),yst=load('yst-screen.png'),tikstage=load('tikstage.svg'),logo=load('kip-emblem.png');
@@ -126,6 +134,7 @@ function halloween(t){
 let start=null,last=-Infinity;
 function frame(ms){requestAnimationFrame(frame);if(document.hidden||ms-last<1000/60-.5)return;last=ms;if(start===null)start=ms;const t=(ms-start)/1000;if(!ready(background))return;g.setTransform(c.width/W,0,0,c.height/H,0,0);g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';g.drawImage(halloweenActive()&&ready(seasonalBackground)?seasonalBackground:background,0,0,W,H);television(t);aquarium(t);halloween(t)}
 requestAnimationFrame(frame);
+}
 
 // Christmas string lights on the camera border. Default on; ?xmas=0 removes them.
 // Bulbs animate with opacity and transform only so OBS can composite them at 60fps.
