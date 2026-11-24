@@ -42,17 +42,16 @@
   16%{opacity:.9}
   100%{transform:translateY(13px);opacity:0}
 }
-#xmas .ornament{transform-box:fill-box;transform-origin:center;animation:x-tw var(--tw) ease-in-out infinite;animation-delay:var(--td)}
 @media (prefers-reduced-motion:reduce){
-  #xmas .glowbit,#xmas .flake,#xmas .ornament{animation:none}
-  #xmas .glowbit,#xmas .ornament{opacity:.9;transform:none}
+  #xmas .glowbit,#xmas .flake{animation:none}
+  #xmas .glowbit{opacity:.9;transform:none}
 }
 
 html.only-xmas,html.only-xmas body{background:transparent}
 html.only-xmas #stage{height:min(100vh,56.25vw)}
 html.only-xmas #stage canvas{display:none}
 </style></head><body>
-<!-- Crăciun: ?xmas=1 implicit pornit, ?xmas=0 oprește instalațiile și decorul. ?only=xmas lasă doar luminile, bradul, cadourile și ghirlandele, pe fundal transparent. -->
+<!-- Crăciun: ?xmas=1 implicit pornit, ?xmas=0 oprește instalațiile de pe cadru. ?only=xmas desenează doar instalațiile, pe fundal transparent, fără scena camerei. -->
 <div id="stage">
 <canvas width="1920" height="1080" aria-label="Cameră gaming cu televizor central, reclame YST și TikStage, logo KIP și acvariu"></canvas>
 </div>
@@ -242,80 +241,6 @@ function initXmas(){
       +'<circle class="spec glowbit" cx="-1.8" cy="8.3" r="1.55" fill="#fff"/>'
       +'</g>';
   });
-  // Room decor shares the 1920×1080 overlay grid (artwork 1672×941 stretched to the frame).
-  // Tree stands on the carpet between the aquarium cabinet and the TV, clear of center stage.
-  function roomDecor(){
-    const ax=x=>num(x*1920/1672),ay=y=>num(y*1080/941);
-    const palette=['#ff2c2c','#ffd34f','#3aa0ff','#fff6e4','#5dff86'];
-    const ornament=(x,y,r,i)=>{
-      const tw=(1.05+hash(i+3)*1.45).toFixed(2)+'s',td=(-hash(i+8)*2.6).toFixed(2)+'s';
-      const fill=palette[i%palette.length],style=' style="--tw:'+tw+';--td:'+td+'"';
-      return '<circle class="ornament" cx="'+x+'" cy="'+y+'" r="'+num(r*2.15)+'" fill="'+fill+'" opacity=".42"'+style+'/>'
-        +'<circle class="ornament" cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+fill+'"'+style+'/>'
-        +'<circle cx="'+num(x-r*.32)+'" cy="'+num(y-r*.34)+'" r="'+num(r*.28)+'" fill="#fff" opacity=".85"/>';
-    };
-    const bez=(x0,y0,cx,cy,x1,y1,t)=>{const u=1-t;return [u*u*x0+2*u*t*cx+t*t*x1,u*u*y0+2*u*t*cy+t*t*y1]};
-    const swag=(x0,y0,x1,y1,sag,seed)=>{
-      const mx=num((x0+x1)/2),my=num((y0+y1)/2+sag);
-      let s='<path d="M '+num(x0)+' '+num(y0)+' Q '+mx+' '+my+' '+num(x1)+' '+num(y1)+'" fill="none" stroke="#0c3e1e" stroke-width="9" stroke-linecap="round"/>'
-        +'<path d="M '+num(x0)+' '+num(y0)+' Q '+mx+' '+num(my-2)+' '+num(x1)+' '+num(y1)+'" fill="none" stroke="#218a44" stroke-width="4.4" stroke-linecap="round"/>';
-      const count=Math.max(4,Math.round(Math.hypot(x1-x0,y1-y0)/42));
-      for(let i=0;i<=count;i++){
-        const [x,y]=bez(x0,y0,mx,my,x1,y1,i/count);
-        const rot=num((hash(seed+i)-.5)*70);
-        s+='<ellipse cx="'+num(x)+'" cy="'+num(y)+'" rx="6.2" ry="2.4" fill="#115c30" transform="rotate('+rot+' '+num(x)+' '+num(y)+')" opacity=".95"/>';
-        if(i%2===0)s+='<circle cx="'+num(x+4)+'" cy="'+num(y+3)+'" r="2.15" fill="#c8102e"/>';
-        s+=ornament(num(x),num(y-1),i%3?2.15:2.55,seed+i);
-      }
-      return s;
-    };
-    const gift=(x,y,w,h,wrap,band)=>{
-      const hw=num(w/2),top=-h;
-      return '<g transform="translate('+num(x)+' '+num(y)+')">'
-        +'<rect x="'+(-hw)+'" y="'+top+'" width="'+w+'" height="'+h+'" rx="2.4" fill="'+wrap+'" stroke="#24160f" stroke-width="1.1"/>'
-        +'<rect x="-3.1" y="'+top+'" width="6.2" height="'+h+'" fill="'+band+'"/>'
-        +'<rect x="'+(-hw)+'" y="'+num(top+h*.4)+'" width="'+w+'" height="5.2" fill="'+band+'"/>'
-        +'<path d="M0 '+top+' C -14 '+(top-14)+' -16 '+(top+1)+' -5.5 '+top+' C -12 '+(top-5)+' -3 '+(top-16)+' 0 '+top+' C 3 '+(top-16)+' 12 '+(top-5)+' 5.5 '+top+' C 16 '+(top+1)+' 14 '+(top-14)+' 0 '+top+'Z" fill="'+band+'"/>'
-        +'</g>';
-    };
-    const cx=ax(460),top=ay(268);
-    const tiers=[[8,132,38],[96,252,58],[196,386,74],[304,520,84]];
-    const greens=['#0d4a28','#146838','#1b8144','#24964e'];
-    let tree='';
-    tiers.forEach(([y0,y1,hw],i)=>{
-      const tipy=top+y0,basey=top+y1,mid=num((tipy+basey)/2);
-      tree+='<path d="M '+cx+' '+num(tipy)+' Q '+num(cx-hw*.12)+' '+mid+' '+num(cx-hw)+' '+num(basey)+' L '+num(cx+hw)+' '+num(basey)+' Q '+num(cx+hw*.12)+' '+mid+' '+cx+' '+num(tipy)+' Z" fill="'+greens[i]+'"/>';
-      const needles=5+i*2;
-      for(let k=1;k<=needles;k++){
-        const t=k/(needles+1),y=tipy+(basey-tipy)*t,half=hw*(0.18+0.82*t),len=8+i*1.6;
-        tree+='<path d="M '+num(cx-half+3)+' '+num(y)+' L '+num(cx-half-len)+' '+num(y+5)+'" stroke="#0f5c30" stroke-width="1.8" stroke-linecap="round"/>'
-          +'<path d="M '+num(cx+half-3)+' '+num(y)+' L '+num(cx+half+len)+' '+num(y+4)+'" stroke="#1c8a46" stroke-width="1.8" stroke-linecap="round"/>';
-      }
-      tree+='<path d="M '+cx+' '+num(tipy+8)+' L '+num(cx-hw*.38)+' '+mid+'" fill="none" stroke="#e8fff1" stroke-width="1.7" stroke-linecap="round" opacity=".42"/>';
-    });
-    const trunkY=top+508;
-    tree+='<rect x="'+num(cx-9)+'" y="'+trunkY+'" width="18" height="48" rx="3" fill="#5c3a20"/>'
-      +'<ellipse cx="'+cx+'" cy="'+num(trunkY+50)+'" rx="34" ry="9" fill="#6a3f24"/>'
-      +'<ellipse cx="'+cx+'" cy="'+num(trunkY+46)+'" rx="24" ry="5" fill="#8d5a34"/>';
-    const spots=[[0,86,3.3],[-18,124,2.7],[22,132,2.8],[-6,164,2.6],[30,198,2.9],[-36,206,2.7],[8,224,2.5],[-24,248,3.1],
-      [42,262,2.6],[-48,280,2.8],[16,300,2.7],[-12,328,3.2],[36,340,2.6],[-44,356,2.9],[6,374,2.5],[54,386,2.7],
-      [-58,404,2.8],[24,422,3.1],[-32,438,2.6],[48,448,2.7],[-6,466,2.9],[20,486,2.6],[-40,498,2.7]];
-    let lights='';
-    spots.forEach(([dx,dy,r],i)=>{lights+=ornament(num(cx+dx),num(top+dy),r,i+40)});
-    let star='';
-    for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rad=i%2?6.2:15.5;star+=(i?'L':'M')+num(cx+Math.cos(a)*rad)+' '+num(top-6+Math.sin(a)*rad)}
-    const foot=trunkY+52;
-    const presents=gift(cx-70,foot,74,50,'#b4232c','#f3d27a')
-      +gift(cx+46,foot-6,62,68,'#1d6b3a','#f4f0e4')
-      +gift(cx-6,foot+2,50,40,'#c9861a','#f7f3ea');
-    const tv=swag(ax(558),ay(34),ax(1114),ay(34),16,80);
-    const upper=swag(ax(1452),ay(228),ax(1636),ay(234),11,120);
-    const lower=swag(ax(1484),ay(384),ax(1632),ay(392),10,160);
-    return '<g id="xmas-room">'+presents+tree
-      +'<path d="'+star+'Z" fill="#ffe08a" stroke="#c9861a" stroke-width="1"/>'
-      +'<circle cx="'+cx+'" cy="'+num(top-6)+'" r="3.2" fill="#fff6d0"/>'
-      +lights+tv+upper+lower+'</g>';
-  }
   const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
   svg.id='xmas';
   svg.setAttribute('viewBox','0 0 1920 1080');
@@ -334,8 +259,7 @@ function initXmas(){
     +'<g transform="translate(6 3)"><use href="#sprig-holly" width="72" height="66"/></g>'
     +'<g transform="translate(1914 3) scale(-1 1)"><use href="#sprig-pine" width="70" height="58"/></g>'
     +'<g transform="translate(6 1076) scale(1 -1)"><use href="#sprig-holly" width="72" height="66"/></g>'
-    +'<g transform="translate(1914 1076) scale(-1 -1)"><use href="#sprig-pine" width="70" height="58"/></g>'
-    +roomDecor();
+    +'<g transform="translate(1914 1076) scale(-1 -1)"><use href="#sprig-pine" width="70" height="58"/></g>';
   stage.appendChild(svg);
   const nodes=[...svg.querySelectorAll('.b')];
   const modes=['chase','alt','twinkle','fade'];
