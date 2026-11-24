@@ -4,7 +4,7 @@ Scena păstrează logo-ul KIP pe perete, ecranul cu reclame YST/TikStage și acv
 Decor: mobilier antracit, mochetă gri, panouri acustice și iluminare albastru-violet.
 
 OBS — sursă Browser:
-URL: https://pauncatalin-cmd.github.io/overlaygreenscreen/overlay.html?v=orig-20261123
+URL: https://pauncatalin-cmd.github.io/overlaygreenscreen/overlay.html?v=xmas-20261124
 Width: 1920
 Height: 1080
 FPS: 60 (sau 30 pentru consum redus)
@@ -18,3 +18,8 @@ Televizorul central alternează YST, TikStage și logo KIP la 9 secunde. Acvariu
 Tema Halloween 2026: dovleci realiști cu lumină de lumânare animată.
 Revenire automată la scena originală: 2 noiembrie 2026, 00:00, Europe/Berlin, inclusiv dacă sursa OBS rămâne deschisă.
 Revenire imediată: overlay.html?theme=normal
+
+Decorațiuni de Crăciun: instalații luminoase pe marginea cadrului. Becurile se aprind, clipesc și schimbă culorile roșu, verde, auriu, albastru și alb.
+Moduri automate, câte 9 secunde: urmărire, alternant, sclipire, estompare lentă.
+Ninsoare fină pe marginea de sus și un mic accent de ilice sau brad la colțuri. Nu acoperă fața și nu acoperă ecranul televizorului.
+Implicit pornite. După sărbători adaugă xmas=0 (overlay.html?v=xmas-20261124&xmas=0). Pornire explicită: xmas=1.

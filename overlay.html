@@ -1,7 +1,56 @@
 <!doctype html>
 <html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KIP — Cameră gaming</title>
-<style>@font-face{font-family:Barlow;src:url(assets/font-4.ttf);font-weight:800}html,body{margin:0;width:100%;height:100%;background:#08090b;overflow:hidden}body{display:grid;place-items:center}canvas{display:block;width:min(100vw,177.7778vh);height:auto;aspect-ratio:16/9}</style></head><body>
+<style>@font-face{font-family:Barlow;src:url(assets/font-4.ttf);font-weight:800}html,body{margin:0;width:100%;height:100%;background:#08090b;overflow:hidden}body{display:grid;place-items:center}#stage{position:relative;width:min(100vw,177.7778vh);aspect-ratio:16/9}#stage canvas{display:block;width:100%;height:100%}</style>
+<style id="xmas-style">
+#xmas{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none}
+#xmas .glowbit{transform-box:fill-box;transform-origin:center;opacity:.85}
+#xmas .halo{mix-blend-mode:screen}
+#xmas .b[data-c="red"] .halo{fill:url(#h-red)}#xmas .b[data-c="red"] .glass{fill:url(#b-red)}
+#xmas .b[data-c="green"] .halo{fill:url(#h-green)}#xmas .b[data-c="green"] .glass{fill:url(#b-green)}
+#xmas .b[data-c="gold"] .halo{fill:url(#h-gold)}#xmas .b[data-c="gold"] .glass{fill:url(#b-gold)}
+#xmas .b[data-c="blue"] .halo{fill:url(#h-blue)}#xmas .b[data-c="blue"] .glass{fill:url(#b-blue)}
+#xmas .b[data-c="white"] .halo{fill:url(#h-white)}#xmas .b[data-c="white"] .glass{fill:url(#b-white)}
+#xmas[data-mode="chase"] .glowbit{animation:x-chase 2.8s linear infinite;animation-delay:var(--chase)}
+#xmas[data-mode="alt"] .odd .glowbit{animation:x-alt 1.15s ease-in-out infinite}
+#xmas[data-mode="alt"] .even .glowbit{animation:x-alt 1.15s ease-in-out infinite;animation-delay:-.575s}
+#xmas[data-mode="twinkle"] .glowbit{animation:x-tw var(--tw) ease-in-out infinite;animation-delay:var(--td)}
+#xmas[data-mode="fade"] .glowbit{animation:x-fade 6.4s ease-in-out infinite;animation-delay:var(--fade)}
+#xmas .flake{animation:x-fall var(--fd) linear infinite;animation-delay:var(--td);will-change:transform,opacity}
+@keyframes x-chase{
+  0%,100%{opacity:.4;transform:scale(.92)}
+  3%{opacity:1;transform:scale(1.08)}
+  8%{opacity:.96;transform:scale(1.02)}
+  16%{opacity:.62;transform:scale(.98)}
+  28%{opacity:.42;transform:scale(.93)}
+}
+@keyframes x-alt{
+  0%,100%{opacity:1;transform:scale(1.05)}
+  50%{opacity:.26;transform:scale(.9)}
+}
+@keyframes x-tw{
+  0%,100%{opacity:.28;transform:scale(.9)}
+  32%{opacity:1;transform:scale(1.07)}
+  52%{opacity:.7;transform:scale(1)}
+  74%{opacity:.36;transform:scale(.93)}
+}
+@keyframes x-fade{
+  0%,100%{opacity:.32;transform:scale(.92)}
+  50%{opacity:1;transform:scale(1.04)}
+}
+@keyframes x-fall{
+  0%{transform:translateY(0);opacity:0}
+  16%{opacity:.9}
+  100%{transform:translateY(13px);opacity:0}
+}
+@media (prefers-reduced-motion:reduce){
+  #xmas .glowbit,#xmas .flake{animation:none}
+  #xmas .glowbit{opacity:.9;transform:none}
+}
+</style></head><body>
+<!-- Crăciun: ?xmas=1 implicit pornit, ?xmas=0 oprește instalațiile de pe cadru -->
+<div id="stage">
 <canvas width="1920" height="1080" aria-label="Cameră gaming cu televizor central, reclame YST și TikStage, logo KIP și acvariu"></canvas>
+</div>
 <script>
 'use strict';
 const c=document.querySelector('canvas'),g=c.getContext('2d');
@@ -77,4 +126,140 @@ function halloween(t){
 let start=null,last=-Infinity;
 function frame(ms){requestAnimationFrame(frame);if(document.hidden||ms-last<1000/60-.5)return;last=ms;if(start===null)start=ms;const t=(ms-start)/1000;if(!ready(background))return;g.setTransform(c.width/W,0,0,c.height/H,0,0);g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';g.drawImage(halloweenActive()&&ready(seasonalBackground)?seasonalBackground:background,0,0,W,H);television(t);aquarium(t);halloween(t)}
 requestAnimationFrame(frame);
+
+// Christmas string lights on the camera border. Default on; ?xmas=0 removes them.
+// Bulbs animate with opacity and transform only so OBS can composite them at 60fps.
+function initXmas(){
+  const flag=new URLSearchParams(location.search).get('xmas');
+  if(flag!==null&&/^(0|false|off|no)$/i.test(flag.trim()))return;
+  const stage=document.getElementById('stage');
+  if(!stage)return;
+  const segs=[
+    [[24,14],[250,40],[500,14]],
+    [[500,14],[960,22],[1420,14]],
+    [[1420,14],[1670,40],[1896,14]],
+    [[1896,14],[1848,526],[1896,1038]],
+    [[1896,1038],[1670,1054],[1420,1038]],
+    [[1420,1038],[960,1056],[500,1038]],
+    [[500,1038],[250,1054],[24,1038]],
+    [[24,1038],[72,526],[24,14]]
+  ];
+  const bez=(p0,c,p1,t)=>{const u=1-t;return [u*u*p0[0]+2*u*t*c[0]+t*t*p1[0],u*u*p0[1]+2*u*t*c[1]+t*t*p1[1]]};
+  const samples=[];
+  segs.forEach(([p0,c,p1])=>{for(let i=0;i<28;i++)samples.push(bez(p0,c,p1,i/28))});
+  const spacing=44,bulbs=[samples[0]];
+  let traveled=0,nextAt=spacing,px=samples[0][0],py=samples[0][1];
+  for(let i=1;i<samples.length;i++){
+    const x=samples[i][0],y=samples[i][1],dx=x-px,dy=y-py,len=Math.hypot(dx,dy)||1e-4;
+    while(traveled+len>=nextAt){
+      const t=(nextAt-traveled)/len;
+      bulbs.push([px+dx*t,py+dy*t]);
+      nextAt+=spacing;
+    }
+    traveled+=len;px=x;py=y;
+  }
+  if(bulbs.length>2){
+    const a=bulbs[0],b=bulbs[bulbs.length-1];
+    if(Math.hypot(a[0]-b[0],a[1]-b[1])<spacing*.55)bulbs.pop();
+  }
+  const n=bulbs.length,colors=['red','green','gold','blue','white'];
+  const hash=i=>{const x=Math.sin(i*127.1+19.19)*43758.5453;return x-Math.floor(x)};
+  const num=v=>Math.round(v*10)/10;
+  let wire='';
+  segs.forEach(([p0,c,p1],i)=>{wire+=(i?'':'M '+p0[0]+' '+p0[1])+' Q '+c[0]+' '+c[1]+' '+p1[0]+' '+p1[1]});
+  const ySnow=x=>5.2+3.2*Math.sin(x*0.016)+1.8*Math.sin(x*0.041+0.7)+1.1*Math.sin(x*0.09+2.1);
+  let snow='M0 0 H1920 L1920 '+num(ySnow(1920));
+  for(let x=1908;x>=0;x-=12)snow+=' L'+x+' '+num(ySnow(x));
+  snow+=' Z';
+  const halo=(id,core,mid,edge)=>'<radialGradient id="h-'+id+'" cx="50%" cy="42%" r="50%"><stop offset="0%" stop-color="'+core+'" stop-opacity="1"/><stop offset="16%" stop-color="'+mid+'" stop-opacity=".82"/><stop offset="40%" stop-color="'+edge+'" stop-opacity=".42"/><stop offset="100%" stop-color="'+edge+'" stop-opacity="0"/></radialGradient>';
+  const glass=(id,hot,body,shade)=>'<radialGradient id="b-'+id+'" cx="35%" cy="30%" r="72%"><stop offset="0%" stop-color="#fff"/><stop offset="18%" stop-color="'+hot+'"/><stop offset="55%" stop-color="'+body+'"/><stop offset="100%" stop-color="'+shade+'"/></radialGradient>';
+  const leaf='url(#leaf)';
+  const defs='<defs>'
+    +halo('red','#fff4f4','#ff6a6a','#ff1c1c')+glass('red','#ffc4c4','#ff2c2c','#7a0014')
+    +halo('green','#f3fff6','#67f28a','#14c94a')+glass('green','#d8ffe4','#22d14e','#064018')
+    +halo('gold','#fff8e6','#ffd56a','#ffb000')+glass('gold','#fff1b8','#ffc42e','#8a5a00')
+    +halo('blue','#f4f9ff','#8ec8ff','#1a86ff')+glass('blue','#d7ecff','#2f9bff','#063066')
+    +halo('white','#ffffff','#fff6e8','#ffe3b5')+glass('white','#fffdf8','#fff4dd','#c9b48c')
+    +'<linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#46b85e"/><stop offset="48%" stop-color="#167338"/><stop offset="100%" stop-color="#0c3e1e"/></linearGradient>'
+    +'<symbol id="sprig-holly" viewBox="-40 -40 80 74">'
+    +'<g fill="'+leaf+'">'
+    +'<path transform="rotate(-58)" d="M0 4 L-3.4 -8 L-10 -5.5 L-4.2 -16 L-11 -18.5 L-2.6 -22 L0 -34 L2.6 -22 L11 -18.5 L4.2 -16 L10 -5.5 L3.4 -8 Z"/>'
+    +'<path transform="rotate(58)" d="M0 4 L-3.4 -8 L-10 -5.5 L-4.2 -16 L-11 -18.5 L-2.6 -22 L0 -34 L2.6 -22 L11 -18.5 L4.2 -16 L10 -5.5 L3.4 -8 Z"/>'
+    +'<path d="M0 2 L-3.4 -10 L-10 -7.5 L-4.2 -18 L-11 -20.5 L-2.6 -24 L0 -36 L2.6 -24 L11 -20.5 L4.2 -18 L10 -7.5 L3.4 -10 Z"/>'
+    +'</g>'
+    +'<path fill="none" stroke="#0c4420" stroke-width=".9" opacity=".5" d="M0 -2 L0 -30"/>'
+    +'<circle cx="-5" cy="2" r="4.7" fill="#c8102e"/><circle cx="5.6" cy="3" r="4.2" fill="#ef3346"/><circle cx=".6" cy="7" r="3.8" fill="#9d0e22"/>'
+    +'<circle cx="-6.5" cy=".4" r="1.35" fill="#fff" opacity=".72"/><circle cx="4.4" cy="1.6" r="1.05" fill="#fff" opacity=".55"/>'
+    +'</symbol>'
+    +'<symbol id="sprig-pine" viewBox="-36 -2 72 60">'
+    +'<path d="M0 56 C-2 44 5 34 -1 18 C-2 12 0 7 0 3" fill="none" stroke="#5c3a20" stroke-width="2.8" stroke-linecap="round"/>'
+    +'<g fill="none" stroke-linecap="round" stroke="#146b32" stroke-width="2.35">'
+    +'<path d="M0 12 L-14 3 M0 12 L-17 10 M0 12 L-13 16 M0 12 L-7 1 M0 12 L13 2 M0 12 L17 9 M0 12 L14 16 M0 12 L6 0"/>'
+    +'<path d="M-1 26 L-20 17 M-1 26 L-22 26 M-1 26 L-18 34 M-1 26 L-10 14 M-1 26 L18 16 M-1 26 L22 25 M-1 26 L17 34 M-1 26 L9 13"/>'
+    +'<path d="M0 40 L-17 34 M0 40 L-20 42 M0 40 L-15 50 M0 40 L-8 32 M0 40 L16 33 M0 40 L20 41 M0 40 L14 50"/>'
+    +'</g>'
+    +'<g fill="none" stroke-linecap="round" stroke="#c6efb0" stroke-width="1.2" opacity=".9">'
+    +'<path d="M0 12 L-8 6 M-1 26 L-11 20 M0 40 L-9 36"/>'
+    +'</g>'
+    +'<ellipse cx="0" cy="52" rx="4" ry="5.2" fill="#6a3f24"/><ellipse cx="0" cy="50.4" rx="2.7" ry="2" fill="#8d5a34"/>'
+    +'</symbol>'
+    +'<clipPath id="snowclip"><rect width="1920" height="24"/></clipPath>'
+    +'</defs>';
+  const clumps=[[150,6.5,18,3.6],[430,5.5,12,3],[880,6.5,22,3.8],[1260,5.5,14,3.1],[1600,6.5,18,3.5],[1810,5.5,11,2.8]];
+  let clump='';
+  clumps.forEach(([x,y,rx,ry])=>{clump+='<ellipse cx="'+x+'" cy="'+y+'" rx="'+rx+'" ry="'+ry+'" fill="#f7fbff"/>'});
+  let flakes='';
+  for(let i=0;i<16;i++){
+    const x=num(36+hash(i)*1848),r=num(0.7+hash(i+4)*1.5);
+    const fd=(3.4+hash(i+2)*3.2).toFixed(2)+'s',td=(-hash(i+6)*4.2).toFixed(2)+'s';
+    flakes+='<g transform="translate('+x+' 1)"><g class="flake" style="--fd:'+fd+';--td:'+td+'"><circle r="'+r+'" fill="#fff"/></g></g>';
+  }
+  let bulb='';
+  const chaseDur=2.8;
+  bulbs.forEach(([x,y],i)=>{
+    const rot=num((hash(i+2)-.5)*7);
+    const c=colors[i%colors.length];
+    const chase=(-i*chaseDur/n).toFixed(3)+'s';
+    const fade=(-i*0.012).toFixed(3)+'s';
+    const tw=(1.05+hash(i+3)*1.7).toFixed(2)+'s';
+    const td=(-hash(i+8)*2.5).toFixed(2)+'s';
+    const parity=i%2?'even':'odd';
+    bulb+='<g class="b '+parity+'" data-c="'+c+'" transform="translate('+num(x)+' '+num(y)+') rotate('+rot+')" style="--i:'+i+';--chase:'+chase+';--fade:'+fade+';--tw:'+tw+';--td:'+td+'">'
+      +'<circle class="halo glowbit" cy="11.2" r="21"/>'
+      +'<rect class="cap" x="-3.7" y="0" width="7.4" height="5.4" rx="1.2" fill="#17331f"/>'
+      +'<rect x="-2.1" y=".7" width="4.2" height="1.15" rx=".4" fill="#9dcc96" opacity=".4"/>'
+      +'<ellipse class="glass glowbit" cy="11.2" rx="5.2" ry="6.4"/>'
+      +'<circle class="spec glowbit" cx="-1.8" cy="8.3" r="1.55" fill="#fff"/>'
+      +'</g>';
+  });
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.id='xmas';
+  svg.setAttribute('viewBox','0 0 1920 1080');
+  svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+  svg.setAttribute('aria-hidden','true');
+  svg.dataset.mode='chase';
+  svg.dataset.n=String(n);
+  svg.innerHTML=defs
+    +'<path d="'+snow+'" fill="#d5e2ee" opacity=".28" transform="translate(0 3)"/>'
+    +'<path d="'+snow+'" fill="#f5f9fc" opacity=".94"/>'
+    +clump
+    +'<g clip-path="url(#snowclip)">'+flakes+'</g>'
+    +'<path d="'+wire+'" fill="none" stroke="#07140c" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/>'
+    +'<path d="'+wire+'" fill="none" stroke="#2c7a40" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round"/>'
+    +bulb
+    +'<g transform="translate(6 3)"><use href="#sprig-holly" width="72" height="66"/></g>'
+    +'<g transform="translate(1914 3) scale(-1 1)"><use href="#sprig-pine" width="70" height="58"/></g>'
+    +'<g transform="translate(6 1076) scale(1 -1)"><use href="#sprig-holly" width="72" height="66"/></g>'
+    +'<g transform="translate(1914 1076) scale(-1 -1)"><use href="#sprig-pine" width="70" height="58"/></g>';
+  stage.appendChild(svg);
+  const nodes=[...svg.querySelectorAll('.b')];
+  const modes=['chase','alt','twinkle','fade'];
+  let mi=0,shift=0;
+  setInterval(()=>{mi=(mi+1)%modes.length;svg.dataset.mode=modes[mi]},9000);
+  setInterval(()=>{
+    shift=(shift+1)%colors.length;
+    nodes.forEach((el,i)=>{el.dataset.c=colors[(i+shift)%colors.length]});
+  },2800);
+}
+try{initXmas()}catch(err){console.error(err)}
 </script></body></html>
