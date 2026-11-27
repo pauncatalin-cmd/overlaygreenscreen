@@ -76,8 +76,10 @@ const W=1672,H=941,tv={x:550,y:52,w:573,h:294};
 function contain(im,x,y,w,h){if(!ready(im))return;const s=Math.min(w/im.naturalWidth,h/im.naturalHeight);const iw=im.naturalWidth*s,ih=im.naturalHeight*s;g.drawImage(im,x+(w-iw)/2,y+(h-ih)/2,iw,ih)}
 function television(t){
  g.save();g.beginPath();g.rect(tv.x,tv.y,tv.w,tv.h);g.clip();g.fillStyle='#050609';g.fillRect(tv.x,tv.y,tv.w,tv.h);
- const phase=t%27,card=Math.floor(phase/9),p=phase%9;
- g.globalAlpha=Math.min(1,p/.5,(9-p)/.5);
+ const phase=t%120;
+ const card=phase>=30&&phase<40?0:phase>=90&&phase<100?1:2;
+ const p=card===0?phase-30:card===1?phase-90:0;
+ g.globalAlpha=card===2?1:Math.min(1,p/.5,(10-p)/.5);
  if(card===0){contain(yst,tv.x+12,tv.y+10,tv.w-24,tv.h-20)}
  else if(card===1){
   contain(tikstage,tv.x+145,tv.y+35,283,63);
